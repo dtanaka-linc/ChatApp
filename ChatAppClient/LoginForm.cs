@@ -17,11 +17,16 @@ namespace ChatAppServer
             InitializeComponent();
         }
 
+        
         private void LoginButton_Click(object sender, EventArgs e)
         {
             // 押下時に入力内容をサーバーに送信してデータベースと照合を行う
             // 認証成功時　→　画面遷移
             // 認証失敗時　→　メッセージウィンドウ表示
+            DataTable dataTable = new DataTable();
+
+            
+
         }
     }
 }
