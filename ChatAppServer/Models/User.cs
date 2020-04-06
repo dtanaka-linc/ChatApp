@@ -12,13 +12,13 @@ namespace ChatAppServer.Models
         public string Name { get; set; }
         public string Password { get; set; }
 
-        public void Resister(string name, string password)
+        public void Resister(string user_name, string password)
         {
             using(var context = new ChatAppDbContext())
             {
                 var new_user = new User()
                 {
-                    Name = Name,
+                    Name = user_name,
                     Password = password
                 };
 
