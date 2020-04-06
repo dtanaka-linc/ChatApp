@@ -9,42 +9,34 @@ using System.Collections;
 
 namespace ChatAppServer.Service
 {
-
-/*  
- *  サーバ側のライフサイクル
-    create ソケットの作成
-    bind ソケットを特定のIPアドレスとポートに紐付け
-    listen 接続の待受を開始
-    accept 接続を受信
-    close 接続を切断
-
+    /*    要望（後で修正）
+        ・クライアントの接続先情報はXMLあたりで外部ファイル管理してほしい
+        ・Ctrl+Enterとかで送信できるようにもしてほしい
+        ・publicなメソッドやらプロパティはXMLドキュメントつけてほしい
+        ⇒該当のメソッド／変数／プロパティとかの直前で「///」打てば勝手に出るので必要に応じて内容書く感じ
+        ・メンバ変数は可能な限り排除（プロパティで書くのが望ましいらしいですよ！）
+        ⇒public int IntVal {get; set;} みたいなやつ
+        
     */
-
-/*
-        サーバーの処理
-        Bindメソッドでバインド
-        Listenメソッドでクライアントの接続を待機
-        非同期メソッドのBeginAccept→EndAcceptで停止して処理→再度BeginAccept
-        */
-
 
     class TcpService
     {
 
         //サーバーのソケット
-        private Socket server;
-        //接続中のクライアントのコレクション
-        private ArrayList connectedClients;
+        private Socket serverSocket;
+
         //ソケットのエンドポイント
         private IPEndPoint socketEP;
+        private Encoding encoding;
 
         //コンストラクタ
-        TcpService()
+        public TcpService()
         {
-            this.server = new Socket(AddressFamily.InterNetwork,
+            this.serverSocket = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
+            //エンコーディングの設定
+            encoding = Encoding.UTF8;
 
-            
         }
 
         /// <summary>
@@ -55,37 +47,64 @@ namespace ChatAppServer.Service
         /// <param name="backlog">保留中の接続のキューの最大長
         /// （ソケットが受け入れしていない接続要求を何個まで保持するかの最大値）</param>
         public void listen(string host, int port, int backlog)
+
         {
-            socketEP = new IPEndPoint(
-                Dns.GetHostEntry(host).AddressList[0], port);
-            this.server.Bind(this.socketEP);
+            Console.WriteLine("listen start");
+
+            //Listen中にlistenしないような処理を追加する
+
+            this.socketEP = new IPEndPoint(
+            Dns.Resolve(host).AddressList[0], port);
+
+            //バインドする
+            this.serverSocket.Bind(this.socketEP);
 
             //Listenを開始する
-            this.server.Listen(backlog);
+            this.serverSocket.Listen(backlog);
 
-            //接続要求を開始する（データを受信すると、指定したコールバックメソッドが実行される）
-            this.server.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
+            //接続要求を開始する
+            this.serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
 
         //データを受信時のコールバックメソッド
         private void AcceptCallback(IAsyncResult ar)
         {
+            //EndAcceptメソッドで、接続したクライアントとの通信に使用するSocketオブジェクト
+            Socket connectedClient = null;
+            try
+            {
+                lock (this)
+                {
+                    connectedClient = serverSocket.EndAccept(ar);
+                    Console.WriteLine("クライアント({0}:{1})と接続しました。",
+                    ((System.Net.IPEndPoint)connectedClient.RemoteEndPoint).Address,
+                    ((System.Net.IPEndPoint)connectedClient.RemoteEndPoint).Port);
+                }
+            }
+            catch
+            {
+                serverSocket.Close();
+                return;
+            }
 
-            //接続要求をいったん停止
-            //EndAccept;
-
-            //接続中のクライアント一覧に追加する
-
-            //何らかの処理
+            //(メッセージ送信テスト・後で削除)
+            connectedClient.Send(System.Text.Encoding.UTF8.GetBytes("接続確認"));
+            //connectedClient.Shutdown(SocketShutdown.Both);
+            //connectedClient.Close();
 
             //接続要求施行を再開する
-            this.server.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
+            this.serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
 
-        //接続中のクライアント全員にメッセージを送信
-        public void SendMessageAllClients(String message)
+        //接続中のクライアント全員にメッセージを送信する
+        public void SendMessageAllClients(byte[] sendBytes)
         {
             //全員にメッセージを送る
+            lock (this)
+            {
+                //データを送信する
+                serverSocket.Send(sendBytes);
+            }
         }
 
 
