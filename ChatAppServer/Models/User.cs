@@ -11,5 +11,20 @@ namespace ChatAppServer.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
+
+        public void Resister(string name, string password)
+        {
+            using(var context = new ChatAppDbContext())
+            {
+                var new_user = new User()
+                {
+                    Name = Name,
+                    Password = password
+                };
+
+                context.Users.Add(new_user);
+                context.SaveChanges();
+            }
+        }
     }
 }
