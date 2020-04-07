@@ -25,7 +25,7 @@ namespace ChatAppServer.Repository
         /// <param name="name"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public User CreateUser(string name, string password)
+        public void CreateUser(string name, string password)
         {
             var isUserName = ExistsUserName(name);
 
@@ -38,11 +38,6 @@ namespace ChatAppServer.Repository
                 };
                 DbContext.Users.Add(user);
                 DbContext.SaveChanges();
-                return user;
-            } 
-            else
-            {
-                return false;
             }
         }
 

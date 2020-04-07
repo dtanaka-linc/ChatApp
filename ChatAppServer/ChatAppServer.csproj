@@ -85,6 +85,10 @@
     <Compile Include="Migrations\202004021230279_CreateUser.designer.cs">
       <DependentUpon>202004021230279_CreateUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004070834442_AddIndexToUsers.cs" />
+    <Compile Include="Migrations\202004070834442_AddIndexToUsers.designer.cs">
+      <DependentUpon>202004070834442_AddIndexToUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChatAppDbContext.cs" />
     <Compile Include="Models\ChatLog.cs" />
@@ -94,6 +98,9 @@
     <Compile Include="Repository\UserRepository.cs" />
     <EmbeddedResource Include="Migrations\202004021230279_CreateUser.resx">
       <DependentUpon>202004021230279_CreateUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004070834442_AddIndexToUsers.resx">
+      <DependentUpon>202004070834442_AddIndexToUsers.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
