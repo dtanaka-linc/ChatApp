@@ -43,6 +43,7 @@
             this.textBoxSendMessage.Name = "textBoxSendMessage";
             this.textBoxSendMessage.Size = new System.Drawing.Size(606, 25);
             this.textBoxSendMessage.TabIndex = 0;
+            this.textBoxSendMessage.TextChanged += new System.EventHandler(this.textBoxSendMessage_TextChanged);
             // 
             // buttonSendMessage
             // 
@@ -66,6 +67,7 @@
             // 
             // menuStripConnect
             // 
+            this.menuStripConnect.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStripConnect.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStripConnect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemConnect});
@@ -103,6 +105,7 @@
             this.MainMenuStrip = this.menuStripConnect;
             this.Name = "ChatForm";
             this.Text = "ChatForm";
+            this.Load += new System.EventHandler(this.ChatForm_Load);
             this.menuStripConnect.ResumeLayout(false);
             this.menuStripConnect.PerformLayout();
             this.ResumeLayout(false);

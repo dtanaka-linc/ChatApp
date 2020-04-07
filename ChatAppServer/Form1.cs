@@ -33,8 +33,15 @@ namespace ChatAppServer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            
+            Task.Delay(1000);
+            //接続確認用の仮設定、後で別ファイルで管理する
+            host = "localhost";
+            port = 2001;
+            backlog = 10;
+            tcpService.listen(host, port, backlog);
+            //サーバーを立ち上げる
+            textBox1.Text = "受信中";
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -51,6 +58,11 @@ namespace ChatAppServer
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            tcpService.socketClose();
         }
     }
 }

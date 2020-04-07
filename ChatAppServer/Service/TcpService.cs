@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections;
+using System.Threading;
 
 namespace ChatAppServer.Service
 {
@@ -28,6 +29,11 @@ namespace ChatAppServer.Service
         //ソケットのエンドポイント
         private IPEndPoint socketEP;
         private Encoding encoding;
+
+        public Socket ServerSocket { get => serverSocket; set => serverSocket = value; }
+
+        // マニュアルリセットイベントで処理待ちができる？
+        private ManualResetEvent mre = new ManualResetEvent(false);
 
         //コンストラクタ
         public TcpService()
@@ -53,17 +59,17 @@ namespace ChatAppServer.Service
 
             //Listen中にlistenしないような処理を追加する
 
-            this.socketEP = new IPEndPoint(
+            socketEP = new IPEndPoint(
             Dns.Resolve(host).AddressList[0], port);
 
             //バインドする
-            this.serverSocket.Bind(this.socketEP);
+            serverSocket.Bind(this.socketEP);
 
             //Listenを開始する
-            this.serverSocket.Listen(backlog);
+            serverSocket.Listen(backlog);
 
             //接続要求を開始する
-            this.serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
+            serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
 
         //データを受信時のコールバックメソッド
@@ -77,8 +83,8 @@ namespace ChatAppServer.Service
                 {
                     connectedClient = serverSocket.EndAccept(ar);
                     Console.WriteLine("クライアント({0}:{1})と接続しました。",
-                    ((System.Net.IPEndPoint)connectedClient.RemoteEndPoint).Address,
-                    ((System.Net.IPEndPoint)connectedClient.RemoteEndPoint).Port);
+                    ((IPEndPoint)connectedClient.RemoteEndPoint).Address,
+                    ((IPEndPoint)connectedClient.RemoteEndPoint).Port);
                 }
             }
             catch
@@ -88,12 +94,12 @@ namespace ChatAppServer.Service
             }
 
             //(メッセージ送信テスト・後で削除)
-            connectedClient.Send(System.Text.Encoding.UTF8.GetBytes("接続確認"));
+            connectedClient.Send(encoding.GetBytes("接続確認"));
             //connectedClient.Shutdown(SocketShutdown.Both);
             //connectedClient.Close();
 
             //接続要求施行を再開する
-            this.serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
+            serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
 
         //接続中のクライアント全員にメッセージを送信する
@@ -107,7 +113,13 @@ namespace ChatAppServer.Service
             }
         }
 
+        //接続を切るときの処理
+        public void socketClose() 
+        {
+            ServerSocket.Close();
+            Console.WriteLine("Listenerを閉じました。");
 
+        }
 
         }
 }

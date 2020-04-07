@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace ChatAppClient.Service
 {
 
-    /*    要望（後で修正）
+	/*    要望（後で修正）
         ・クライアントの接続先情報はXMLあたりで外部ファイル管理してほしい
         ・Ctrl+Enterとかで送信できるようにもしてほしい
         ・publicなメソッドやらプロパティはXMLドキュメントつけてほしい
@@ -30,10 +26,11 @@ namespace ChatAppClient.Service
 
 		private Encoding encoding;
 
+
 		//コンストラクタ
 		public ClientService()
 		{
-			this.clientSocket = new Socket(AddressFamily.InterNetwork,
+			clientSocket = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp);
 
 			//エンコーディングの設定
@@ -46,10 +43,10 @@ namespace ChatAppClient.Service
 		{
 			Console.WriteLine("Client connect");
 
-			this.socketEP = new IPEndPoint(
+			socketEP = new IPEndPoint(
 			Dns.Resolve(host).AddressList[0], port);
 
-			this.clientSocket.Connect(socketEP);
+			clientSocket.Connect(socketEP);
 
 			//非同期データ受信を開始する
 			AsyncStateClient.StartReceive(clientSocket);
@@ -62,15 +59,15 @@ namespace ChatAppClient.Service
 		{
 			//メッセージを送信する
 			//文字列をByte型配列に変換
-			byte[] sendBytes = this.encoding.GetBytes(msg + "\r\n");
+			byte[] sendBytes = encoding.GetBytes(msg + "\r\n");
 
 			lock (this)
 			{
 				//データを送信する
-				this.clientSocket.Send(sendBytes);
+				clientSocket.Send(sendBytes);
 			}
 		}
-	
+
 
 	}
 }
