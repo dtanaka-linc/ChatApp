@@ -7,7 +7,7 @@ using ChatAppServer.Models;
 namespace ChatAppServer.Repository
 {
     /// <summary>
-    /// Userエンティティにアクセスし新規登録や認証を行うメソッド群です。
+    /// Userモデルにアクセスし新規登録や認証を行うメソッド群です。
     /// </summary>
     public class UserRepository
     {
@@ -20,25 +20,21 @@ namespace ChatAppServer.Repository
         }
 
         /// <summary>
-        /// 新規ユーザー登録を行います。※名前確認部分の切り離しはこれからおこないます
+        /// 名前とパスワードをUsersに追加し、新しくできたUser型のデータを返す
         /// </summary>
         /// <param name="name"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public void CreateUser(string name, string password)
+        public User CreateUser(string name, string password)
         {
-            var isUserName = ExistsUserName(name);
-
-            if (isUserName)
+            var user = new User()
             {
-                var user = new User()
-                {
-                    Name = name,
-                    Password = password
-                };
-                DbContext.Users.Add(user);
-                DbContext.SaveChanges();
-            }
+                Name = name,
+                Password = password
+            };
+            DbContext.Users.Add(user);
+            DbContext.SaveChanges();
+            return user;
         }
 
 
