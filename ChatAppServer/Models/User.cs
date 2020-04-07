@@ -12,6 +12,7 @@ namespace ChatAppServer.Models
     {
         public int Id { get; set; }
         [Index(IsUnique = true)]
+        [Required]
         [StringLength(256)]
         public string Name { get; set; }
         public string Password { get; set; }

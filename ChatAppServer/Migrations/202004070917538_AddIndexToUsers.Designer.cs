@@ -13,7 +13,7 @@ namespace ChatAppServer.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202004070834442_AddIndexToUsers"; }
+            get { return "202004070917538_AddIndexToUsers"; }
         }
         
         string IMigrationMetadata.Source
