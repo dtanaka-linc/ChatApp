@@ -17,15 +17,25 @@ namespace ChatAppServer.Repository
         }
 
         //新規ユーザー登録
-        public void CreateUser(string name, string password)
+        public Boolean CreateUser(string name, string password)
         {
-            var user = new User()
+            var isUserName = IsUserName(name);
+
+            if (isUserName  == true)
             {
-                Name = name,
-                Password = password
-            };
-            DbContext.Users.Add(user);
-            DbContext.SaveChanges();
+                var user = new User()
+                {
+                    Name = name,
+                    Password = password
+                };
+
+                DbContext.Users.Add(user);
+                DbContext.SaveChanges();
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         //ユーザー名検索
@@ -33,5 +43,13 @@ namespace ChatAppServer.Repository
         {
             return this.DbContext.Users.Where(r => r.Name == userName);
         }
+
+
+        //ユーザー名が存在するかどうか
+        public Boolean IsUserName(string userName)
+        {
+            return this.DbContext.Users.Any(r => r.Name == userName);
+        }
+
     }
 }
