@@ -28,7 +28,6 @@ namespace ChatAppServer.Repository
                     Name = name,
                     Password = password
                 };
-
                 DbContext.Users.Add(user);
                 DbContext.SaveChanges();
                 return true;
