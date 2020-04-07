@@ -17,9 +17,15 @@ namespace ChatAppServer.Repository
         }
 
         //新規ユーザー登録
-        public void CreateUser(User user)
+        public void CreateUser(string name, string password)
         {
-
+            var user = new User()
+            {
+                Name = name,
+                Password = password
+            };
+            DbContext.Users.Add(user);
+            DbContext.SaveChanges();
         }
 
         //ユーザー名検索
