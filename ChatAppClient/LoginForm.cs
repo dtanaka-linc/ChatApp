@@ -1,8 +1,5 @@
 ﻿using ChatAppClient;
 using System;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace ChatAppServer
@@ -14,6 +11,11 @@ namespace ChatAppServer
             InitializeComponent();
         }
 
+        /// <summary>
+        /// ログインボタンのクリックイベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LoginButton_Click(object sender, EventArgs e)
         {
             //初回利用時はユーザー登録を行う

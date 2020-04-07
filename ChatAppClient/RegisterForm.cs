@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChatAppClient
@@ -28,30 +21,51 @@ namespace ChatAppClient
 
         public RegisterForm()
         {
-            InitializeComponent();
-
-            
+            InitializeComponent();  
         }
 
+        /// <summary>
+        /// 登録ボタンクリックイベント
+        /// </summary>
+        /// <param name="sender">ボタンクリック</param>
+        /// <param name="e"></param>
         private void RegisterButton_Click(object sender, EventArgs e)
         {
-            // パスワードと確認用の入力が一致する場合は警告する
-            if(passTextBox.Text == confirmTextBox.Text)
+            if(userNameTextBox.Text != "")
             {
-
+                // パスワードと確認用の入力が一致しない場合は警告する
+                if (passTextBox.Text != confirmTextBox.Text)
+                {
+                    MessageBox.Show("入力したパスワードが一致しません", "警告",
+                                     MessageBoxButtons.YesNo,
+                                     MessageBoxIcon.Question);
+                }
+                else
+                {
+                    // User.UserCreateに処理委譲
+                    // passTextBoxの入力内容とユーザー名のテキストを渡す
+                    // とりあえず動確のためメッセージボックスに登録完了と表示する
+                    MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                }
             }
             else
             {
-                // User.UserCreateに処理委譲
-                // passTextBoxの入力内容とユーザー名のテキストを渡す
+                MessageBox.Show("ユーザー名を入力して下さい", "警告",
+                 MessageBoxButtons.YesNo,
+                 MessageBoxIcon.Question);
             }
-
         }
 
+        /// <summary>
+        /// テキストボックスの中身を親フォーム同等に更新する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RegisterForm_Load(object sender, EventArgs e)
         {
             // ユーザー名のテキストボックスのテキストの更新
             this.userNameTextBox.Text = userNameParam;
         }
+
     }
 }

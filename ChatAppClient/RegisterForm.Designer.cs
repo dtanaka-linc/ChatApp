@@ -71,9 +71,9 @@
             // 
             // registerButton
             // 
-            this.registerButton.Location = new System.Drawing.Point(389, 334);
+            this.registerButton.Location = new System.Drawing.Point(390, 330);
             this.registerButton.Name = "registerButton";
-            this.registerButton.Size = new System.Drawing.Size(222, 66);
+            this.registerButton.Size = new System.Drawing.Size(220, 60);
             this.registerButton.TabIndex = 4;
             this.registerButton.Text = "登録";
             this.registerButton.UseVisualStyleBackColor = true;
