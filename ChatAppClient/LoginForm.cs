@@ -16,14 +16,18 @@ namespace ChatAppServer
 
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            // 初回利用時はユーザー登録を行う
+            //初回利用時はユーザー登録を行う
             if (radioButton1.Checked)
             {
-                //ユーザー登録のフォームを別で作って実装していたのですがなんか気持ち悪いのでユーザーコントロールの切り替えで対応しようと思っています（要相談）
+                RegisterForm registerForm = new RegisterForm();
+
+                registerForm.userNameParam = this.NameTextBox.Text;
+
+                registerForm.ShowDialog();
             }
             else
             {
-                bool authResult;
+                var authResult = true;
                 //User.Auth()呼び出し。
                 //とりあえず今は空のメソッド
                 authResult = this.DbConnect();
@@ -33,7 +37,7 @@ namespace ChatAppServer
                 {
                     Form1 frm = new Form1();
                     frm.Show();
-                    this.Close();
+
                 }
                 else
                 {
@@ -48,6 +52,7 @@ namespace ChatAppServer
         {
             return true;
         }
+
 
     }
 }
