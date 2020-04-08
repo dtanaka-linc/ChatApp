@@ -7,10 +7,11 @@ using ChatAppServer.Models;
 namespace ChatAppServer.Repository
 {
     /// <summary>
-    /// Userモデルにアクセスし新規登録や認証を行うメソッド群です。
+    /// Userモデルにアクセスし新規登録や認証を行うメソッド群
     /// </summary>
     public class UserRepository
     {
+
         private ChatAppDbContext DbContext { get; set; }
 
         //コンストラクタ
@@ -19,17 +20,18 @@ namespace ChatAppServer.Repository
             this.DbContext = dbContext;
         }
 
+
         /// <summary>
-        /// 名前とパスワードをUsersに追加し、新しくできたUser型のデータを返す
+        /// 名前とパスワードをUsersに追加し、Userクラス型のデータとして返す
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
-        public User CreateUser(string name, string password)
+        /// <param name="userName">ログインフォームで入力されたユーザー名</param>
+        /// <param name="password">ログインフォームで入力されたパスワード</param>
+        /// <returns>Userクラス型のデータ</returns>
+        public User CreateUser(string userName, string password)
         {
             var user = new User()
             {
-                Name = name,
+                Name = userName,
                 Password = password
             };
             DbContext.Users.Add(user);
@@ -41,6 +43,8 @@ namespace ChatAppServer.Repository
         /// <summary>
         /// ユーザー名で検索する
         /// </summary>
+        /// <param name="userName">ユーザー名</param>
+        /// <returns>ユーザー名で検索した結果</returns>
         public IQueryable<User> FindByUserName(string userName)
         {
             return this.DbContext.Users.Where(r => r.Name == userName);
@@ -48,10 +52,10 @@ namespace ChatAppServer.Repository
 
 
         /// <summary>
-        /// 入力されたユーザー名と同名のレコードが存在するかどうか確認する
+        /// 新規登録フォームで入力されたユーザー名と同名のレコードが存在するかどうかを確認する
         /// </summary>
         /// <param name="userName"></param>
-        /// <returns></returns>
+        /// <returns>入力されたユーザー名の同名のレコードの有無</returns>
         public bool ExistsUserName(string userName)
         {
             return this.DbContext.Users.Any(r => r.Name == userName);
