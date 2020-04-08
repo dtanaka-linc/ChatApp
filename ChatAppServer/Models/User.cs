@@ -16,5 +16,7 @@ namespace ChatAppServer.Models
         [StringLength(256)]
         public string Name { get; set; }
         public string Password { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
