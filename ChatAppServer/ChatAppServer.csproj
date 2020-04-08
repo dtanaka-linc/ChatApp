@@ -89,6 +89,14 @@
     <Compile Include="Migrations\202004070917538_AddIndexToUsers.designer.cs">
       <DependentUpon>202004070917538_AddIndexToUsers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004080800426_AddColumnsToUsers.cs" />
+    <Compile Include="Migrations\202004080800426_AddColumnsToUsers.designer.cs">
+      <DependentUpon>202004080800426_AddColumnsToUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004080803104_AddColumnsToChatLogs.cs" />
+    <Compile Include="Migrations\202004080803104_AddColumnsToChatLogs.designer.cs">
+      <DependentUpon>202004080803104_AddColumnsToChatLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChatAppDbContext.cs" />
     <Compile Include="Models\ChatLog.cs" />
@@ -101,6 +109,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004070917538_AddIndexToUsers.resx">
       <DependentUpon>202004070917538_AddIndexToUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004080800426_AddColumnsToUsers.resx">
+      <DependentUpon>202004080800426_AddColumnsToUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004080803104_AddColumnsToChatLogs.resx">
+      <DependentUpon>202004080803104_AddColumnsToChatLogs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
