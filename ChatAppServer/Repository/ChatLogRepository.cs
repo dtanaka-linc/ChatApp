@@ -7,6 +7,9 @@ using ChatAppServer.Models;
 
 namespace ChatAppServer.Repository
 {
+    /// <summary>
+    /// ChatLogモデルにアクセスしてチャットログの保存をするクラス
+    /// </summary>
     public class ChatLogRepository
     {
         private ChatAppDbContext DbContext { get; set; }
