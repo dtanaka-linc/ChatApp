@@ -30,7 +30,7 @@ namespace ChatAppClient.Service
         public byte[] ReceiveBuffer;
         public MemoryStream ReceivedData;
 
-        //データを送信した後のデリゲートとイベント
+        //データを受信した後のデリゲートとイベント
         public delegate void ReceivedEventHandler(object sender, String text);
         public event ReceivedEventHandler messageReceived;
 
