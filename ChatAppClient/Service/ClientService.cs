@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.IO;
 
 namespace ChatAppClient.Service
 {
@@ -26,17 +27,26 @@ namespace ChatAppClient.Service
 
 		private Encoding encoding;
 
+        public byte[] ReceiveBuffer;
+        public MemoryStream ReceivedData;
 
-		//コンストラクタ
-		public ClientService()
+        //データを送信した後のデリゲートとイベント
+        public delegate void ReceivedEventHandler(object sender, String text);
+        public event ReceivedEventHandler messageReceived;
+
+
+        //コンストラクタ
+        public ClientService()
 		{
 			clientSocket = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp);
 
 			//エンコーディングの設定
 			encoding = Encoding.UTF8;
+            ReceiveBuffer = new byte[1024];
+            ReceivedData = new MemoryStream();
 
-		}
+        }
 
 		//サーバーと接続する
 		public void Connect(string host, int port)
@@ -49,13 +59,86 @@ namespace ChatAppClient.Service
 			clientSocket.Connect(socketEP);
 
 			//非同期データ受信を開始する
-			AsyncStateClient.StartReceive(clientSocket);
+			StartReceive(clientSocket);
 		}
 
-		/*送信側の処理*/
+		public void StartReceive(Socket soc)
+		{
+			AsyncStateClient so = new AsyncStateClient(soc);
+			//非同期受信を開始
+			soc.BeginReceive(so.ReceiveBuffer,
+				0,
+				so.ReceiveBuffer.Length,
+				SocketFlags.None,
+				new AsyncCallback(ReceiveDataCallback),
+				so);
+		}
 
-		//サーバーにメッセージを送信する
-		public void SendMessage(String msg)
+        //BeginReceiveのコールバック
+        private  void ReceiveDataCallback(IAsyncResult ar)
+        {
+            //状態オブジェクトの取得
+            AsyncStateClient so = (AsyncStateClient)ar.AsyncState;
+
+            //読み込んだ長さを取得
+            int len = 0;
+            try
+            {
+                len = so.Socket.EndReceive(ar);
+            }
+            catch (ObjectDisposedException)
+            {
+                //閉じた時
+                Console.WriteLine("閉じました。");
+                return;
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("ホストに強制的に切断されました。");
+                return;
+            }
+
+            //切断されたか調べる
+            if (len <= 0)
+            {
+                Console.WriteLine("切断されました。");
+                so.Socket.Close();
+                return;
+            }
+
+            //受信したデータを蓄積する
+            so.ReceivedData.Write(so.ReceiveBuffer, 0, len);
+            if (so.Socket.Available == 0)
+            {
+                //最後まで受信した時
+                //受信したデータを文字列に変換
+                string str = Encoding.UTF8.GetString(
+                    so.ReceivedData.ToArray());
+
+                //受信した文字列を表示
+                //確認用・実際はフォームに文字列を出力
+                System.Console.WriteLine("サーバーからsendされました：" + str);
+
+                messageReceived(this,str);
+
+
+                so.ReceivedData.Close();
+                so.ReceivedData = new MemoryStream();
+            }
+
+            //再び受信開始
+            so.Socket.BeginReceive(so.ReceiveBuffer,
+                0,
+                so.ReceiveBuffer.Length,
+                SocketFlags.None,
+                new AsyncCallback(ReceiveDataCallback),
+                so);
+        }
+
+        /*送信側の処理*/
+
+        //サーバーにメッセージを送信する
+        public void SendMessage(String msg)
 		{
 			//メッセージを送信する
 			//文字列をByte型配列に変換

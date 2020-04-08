@@ -22,38 +22,6 @@ namespace ChatAppClient.ViewController
         String host = "localhost";
         int port = 2001;
 
-        //ChatFormオブジェクトを保持するためのフィールド
-        private static ChatForm chatFormInstance;
-
-        //ChatFormオブジェクトを取得、設定するためのプロパティ
-        public static ChatForm ChatFormInstance
-        {
-            get
-            {
-                return chatFormInstance;
-            }
-            set
-            {
-                chatFormInstance = value;
-            }
-        }
-
-        //richTextBoxLog.Textを取得、設定するためのプロパティ
-        public string richTextBoxLogText
-        {
-            get
-            {
-                return richTextBoxLog.Text;
-            }
-            set
-            {
-                richTextBoxLog.Text = value;
-            }
-        }
-
-
-        //
-
         public ChatForm()
         {
 
@@ -61,8 +29,8 @@ namespace ChatAppClient.ViewController
 
             //サーバー未接続だとメッセージ送信不可にする
             buttonSendMessage.Enabled = false;
-
-            ChatForm.ChatFormInstance = this;
+            //サービス側のイベントハンドラのメソッドを登録
+            clientService.messageReceived += new ClientService.ReceivedEventHandler(ChatForm_MessageReceived); 
         }
 
         private void buttonSendMessage_Click(object sender, EventArgs e)
@@ -115,6 +83,23 @@ namespace ChatAppClient.ViewController
         private void textBoxSendMessage_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        //データ受信時にイベント発火！　チャット画面を更新する
+        private void ChatForm_MessageReceived(object sender,String text)
+        {
+            if (this.IsDisposed) return;
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((MethodInvoker)delegate { 
+                        ChatForm_MessageReceived(sender,text); 
+                    });
+                }
+                else
+                {
+                richTextBoxLog.Text ="(user) > " + text + "\r\n" + richTextBoxLog.Text;
+            }
+            
         }
     }
 }

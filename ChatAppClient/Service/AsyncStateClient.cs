@@ -58,7 +58,8 @@ namespace ChatAppClient.Service
                 Console.WriteLine("閉じました。");
                 return;
             }
-            catch(SocketException){
+            catch (SocketException)
+            {
                 Console.WriteLine("ホストに強制的に切断されました。");
                 return;
             }
@@ -84,8 +85,6 @@ namespace ChatAppClient.Service
                 //確認用・実際はフォームに文字列を出力
                 System.Console.WriteLine("サーバーからsendされました：" + str);
 
-                SetText(str);
-
 
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
@@ -100,29 +99,6 @@ namespace ChatAppClient.Service
                 so);
         }
 
-        //メッセージの出力処理
-        //スレッド セーフなコントロールの呼び出しでフォームのログテキストボックスに書き込み
-        //→invokeよりasync/awaitの方が今は推奨のよう？後で確認
-        private static void SetText(string text)
-        {
-            if (ChatForm.ChatFormInstance.IsDisposed)
-            {
-                return;
-            }
-            if (ChatForm.ChatFormInstance.InvokeRequired)
-            {
-                ChatForm.ChatFormInstance.Invoke((MethodInvoker)delegate { 
-                    SetText(text); 
-                });
-            }
-            else
-            {
-                ChatForm.ChatFormInstance.richTextBoxLogText =
-                    "(user) > " + text + "\r\n" + ChatForm.ChatFormInstance.richTextBoxLogText;
-            }
-        }
-
-
     }
-    
+
 }

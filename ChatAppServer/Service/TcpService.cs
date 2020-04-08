@@ -114,12 +114,12 @@ namespace ChatAppServer.Service
         }
 
         //接続を切るときの処理
-        public void socketClose() 
+        public void socketClose()
         {
             ServerSocket.Close();
             Console.WriteLine("Listenerを閉じました。");
 
         }
 
-        }
+    }
 }
