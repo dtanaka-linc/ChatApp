@@ -4,9 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ChatAppClient\ChatAppClient.csproj" />
-    <ProjectReference Include="..\ChatAppServer\ChatAppServer.csproj" />
-  </ItemGroup>
-
 </Project>

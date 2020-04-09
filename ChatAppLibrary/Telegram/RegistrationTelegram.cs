@@ -4,7 +4,10 @@ using System.Text;
 
 namespace ChatAppLibrary.Telegram
 {
-    class AuthTelegram : ITelegram
+    /// <summary>
+    /// 登録機能のテレグラム
+    /// </summary>
+    class RegistrationTelegram : ITelegram
     {
         /// <summary>
         /// 処理種別
@@ -17,29 +20,33 @@ namespace ChatAppLibrary.Telegram
         public string UserName { get; set; }
 
         /// <summary>
-        /// パスワード
+        /// 会話内容
         /// </summary>
-        public string PassWord { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="telegram"></param>
-        public AuthTelegram(byte[] telegram)
+        public RegistrationTelegram(byte[] telegram)
         {
             this.Type = telegram[0];
             this.UserName = telegram[1].ToString();
-            this.PassWord = telegram[2].ToString();
+            this.Message = telegram[2].ToString();
         }
 
-        public void GetHeader()
+        public Header GetHeader()
         {
+            Header header = new Header();
 
+            header.UserName = this.UserName;
+
+            return header;
         }
 
-        public void GetBody()
+        public Body GetBody()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

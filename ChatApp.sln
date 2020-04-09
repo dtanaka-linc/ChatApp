@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29920.165
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppClient", "ChatAppClient\ChatAppClient.csproj", "{85C538F4-E677-40CB-B921-7376F6EBDEE6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C5B9A4-CDC6-479C-AEB4-2B312895A589} = {E4C5B9A4-CDC6-479C-AEB4-2B312895A589}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppServer", "ChatAppServer\ChatAppServer.csproj", "{657E02DF-BA32-4D52-B9D7-E9357973A0CF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E4C5B9A4-CDC6-479C-AEB4-2B312895A589} = {E4C5B9A4-CDC6-479C-AEB4-2B312895A589}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatAppLibrary", "ChatAppLibrary\ChatAppLibrary.csproj", "{E4C5B9A4-CDC6-479C-AEB4-2B312895A589}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatAppLibrary", "ChatAppLibrary\ChatAppLibrary.csproj", "{E4C5B9A4-CDC6-479C-AEB4-2B312895A589}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
