@@ -3,6 +3,7 @@
     using System;
     using System.Data.Entity;
     using System.Linq;
+    using System.Collections.Generic;
 
     public class ChatAppDbContext : DbContext {
         public DbSet<User> Users { get; set; }
@@ -31,7 +32,7 @@
         private static Dictionary<Type, bool> _entityHasUpdatedAtDic = new Dictionary<Type, bool>();
         private bool HasCreatedAt(Type type)
         {
-            if (!_entityHasCreatedAtDic.Containskey(type))
+            if (!_entityHasCreatedAtDic.ContainsKey(type))
                 _entityHasCreatedAtDic[type] = type.GetProperties().Any(p =>
                 p.Name == "CreatedAt" && p.CanWrite && p.PropertyType == typeof(DateTime));
             return _entityHasCreatedAtDic[type];
