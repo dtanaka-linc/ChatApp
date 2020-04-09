@@ -62,7 +62,7 @@ namespace ChatAppServer
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            tcpService.socketClose();
+            
         }
     }
 }

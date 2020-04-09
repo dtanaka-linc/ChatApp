@@ -30,11 +30,6 @@ namespace ChatAppServer.Service
         private IPEndPoint socketEP;
         private Encoding encoding;
 
-        public Socket ServerSocket { get => serverSocket; set => serverSocket = value; }
-
-        // マニュアルリセットイベントで処理待ちができる？
-        private ManualResetEvent mre = new ManualResetEvent(false);
-
         //コンストラクタ
         public TcpService()
         {
@@ -57,8 +52,7 @@ namespace ChatAppServer.Service
         {
             Console.WriteLine("listen start");
 
-            //Listen中にlistenしないような処理を追加する
-
+            //エンドポイントの設定
             socketEP = new IPEndPoint(
             Dns.Resolve(host).AddressList[0], port);
 
@@ -75,7 +69,7 @@ namespace ChatAppServer.Service
         //データを受信時のコールバックメソッド
         private void AcceptCallback(IAsyncResult ar)
         {
-            //EndAcceptメソッドで、接続したクライアントとの通信に使用するSocketオブジェクト
+            //接続したクライアントとの通信に使用するSocket
             Socket connectedClient = null;
             try
             {
@@ -90,36 +84,21 @@ namespace ChatAppServer.Service
             catch
             {
                 serverSocket.Close();
+
                 return;
             }
 
             //(メッセージ送信テスト・後で削除)
-            connectedClient.Send(encoding.GetBytes("接続確認"));
-            //connectedClient.Shutdown(SocketShutdown.Both);
-            //connectedClient.Close();
+            connectedClient.Send(encoding.GetBytes("TcpService：（接続確認メッセージ）"));
+
+            //接続したクライアントの状態オブジェクトTcpChatClientの作成
+            TcpStateClient client = new TcpStateClient(connectedClient);
+
+            //受信状態にさせる
+            client.StartReceive(connectedClient);
 
             //接続要求施行を再開する
             serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
-
-        //接続中のクライアント全員にメッセージを送信する
-        public void SendMessageAllClients(byte[] sendBytes)
-        {
-            //全員にメッセージを送る
-            lock (this)
-            {
-                //データを送信する
-                serverSocket.Send(sendBytes);
-            }
-        }
-
-        //接続を切るときの処理
-        public void socketClose()
-        {
-            ServerSocket.Close();
-            Console.WriteLine("Listenerを閉じました。");
-
-        }
-
     }
 }

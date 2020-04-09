@@ -6,31 +6,34 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Windows.Forms;
-using ChatAppClient.ViewController;
-/*
-namespace ChatAppClient.Service
+
+namespace ChatAppServer.Service
 {
-    //１対１だと多分不要、調査中
 
-    //非同期データ受信のためのクライアントの状態オブジェクト
 
-    class AsyncStateClient
+    //非同期データ受信のための状態オブジェクト
+
+    class TcpStateClient
     {
         public Socket Socket;
         public byte[] ReceiveBuffer;
         public MemoryStream ReceivedData;
+        private Encoding encoding;
 
-        public AsyncStateClient(Socket soc)
+        //private String str;
+
+        public TcpStateClient(Socket soc)
         {
             this.Socket = soc;
             this.ReceiveBuffer = new byte[1024];
             this.ReceivedData = new MemoryStream();
+            encoding = Encoding.UTF8;
         }
 
         //データ受信スタート
-*//*        public static void StartReceive(Socket soc)
+        public  void StartReceive(Socket soc)
         {
-            AsyncStateClient so = new AsyncStateClient(soc);
+            TcpStateClient so = new TcpStateClient(soc);
             //非同期受信を開始
             soc.BeginReceive(so.ReceiveBuffer,
                 0,
@@ -38,13 +41,13 @@ namespace ChatAppClient.Service
                 SocketFlags.None,
                 new AsyncCallback(ReceiveDataCallback),
                 so);
-        }*//*
+        }
 
         //BeginReceiveのコールバック
-        private static void ReceiveDataCallback(IAsyncResult ar)
+        private  void ReceiveDataCallback(IAsyncResult ar)
         {
-           *//* //状態オブジェクトの取得
-            AsyncStateClient so = (AsyncStateClient)ar.AsyncState;
+            //状態オブジェクトの取得
+            TcpStateClient so = (TcpStateClient)ar.AsyncState;
 
             //読み込んだ長さを取得
             int len = 0;
@@ -78,16 +81,18 @@ namespace ChatAppClient.Service
             {
                 //最後まで受信した時
                 //受信したデータを文字列に変換
-                string str = Encoding.UTF8.GetString(
+                String str = Encoding.UTF8.GetString(
                     so.ReceivedData.ToArray());
 
                 //受信した文字列を表示
                 //確認用・実際はフォームに文字列を出力
-                System.Console.WriteLine("AsyncStateClient:サーバーからsendされました：" + str);
-
+                System.Console.WriteLine("TcpStateClient:クライアントから送信されたメッセージ：" + str);
 
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
+
+                so.Socket.Send(encoding.GetBytes(str));
+                
             }
 
             //再び受信開始
@@ -96,9 +101,10 @@ namespace ChatAppClient.Service
                 so.ReceiveBuffer.Length,
                 SocketFlags.None,
                 new AsyncCallback(ReceiveDataCallback),
-                so);*//*
+                so);
         }
+
 
     }
 
-}*/
+}

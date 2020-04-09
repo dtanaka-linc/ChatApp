@@ -63,7 +63,9 @@ namespace ChatAppClient.ViewController
 
         private void ChatForm_Load(object sender, EventArgs e)
         {
-            //マルチスタートアッププロジェクトでの動作確認用
+            //コメントアウトを外すとフォームを開いたときにサーバーに接続を行います
+/*
+            //マルチスタートアッププロジェクトでサーバーと同時起動時の動作確認用
             Thread.Sleep(1000);
 
             Console.WriteLine("load時の自動接続処理完了");
@@ -73,11 +75,14 @@ namespace ChatAppClient.ViewController
                 clientService.Connect(host, port);
                 buttonSendMessage.Enabled = true;
 
-            } catch(SocketException se) {
-                
+            }
+            catch (SocketException se)
+            {
+
                 //ちゃんとした例外処理にあとで修正
                 Console.WriteLine("起動時接続に失敗したので手動で接続してください！");
             }
+*/
         }
 
         private void textBoxSendMessage_TextChanged(object sender, EventArgs e)
@@ -88,7 +93,10 @@ namespace ChatAppClient.ViewController
         //データ受信時にイベント発火！　チャット画面を更新する
         private void ChatForm_MessageReceived(object sender,String text)
         {
-            if (this.IsDisposed) return;
+            if (this.IsDisposed)
+            {
+                return;
+            }
                 if (this.InvokeRequired)
                 {
                     this.Invoke((MethodInvoker)delegate { 
@@ -97,7 +105,7 @@ namespace ChatAppClient.ViewController
                 }
                 else
                 {
-                richTextBoxLog.Text ="(user) > " + text + "\r\n" + richTextBoxLog.Text;
+                richTextBoxLog.Text ="user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
             }
             
         }

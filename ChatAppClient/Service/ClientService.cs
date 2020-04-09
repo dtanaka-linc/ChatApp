@@ -24,13 +24,13 @@ namespace ChatAppClient.Service
 		private Socket clientSocket;
 		//ソケットのエンドポイント
 		private IPEndPoint socketEP;
-
+        //文字コード
 		private Encoding encoding;
 
-        public byte[] ReceiveBuffer;
-        public MemoryStream ReceivedData;
+        private byte[] ReceiveBuffer;
+        private MemoryStream ReceivedData;
 
-        //データを受信した後のデリゲートとイベント
+        //データを受信した後、チャット画面更新用のデリゲートとイベント
         public delegate void ReceivedEventHandler(object sender, String text);
         public event ReceivedEventHandler messageReceived;
 
@@ -41,18 +41,19 @@ namespace ChatAppClient.Service
 			clientSocket = new Socket(AddressFamily.InterNetwork,
 				SocketType.Stream, ProtocolType.Tcp);
 
-			//エンコーディングの設定
 			encoding = Encoding.UTF8;
             ReceiveBuffer = new byte[1024];
             ReceivedData = new MemoryStream();
 
         }
 
-		//サーバーと接続する
+		/// <summary>
+        /// 受信状態(Listenメソッド実行後の)サーバーと接続する
+        /// </summary>
+        /// <param name="host">ホスト名</param>
+        /// <param name="port">ポート番号</param>
 		public void Connect(string host, int port)
 		{
-			Console.WriteLine("Client connect");
-
 			socketEP = new IPEndPoint(
 			Dns.Resolve(host).AddressList[0], port);
 
@@ -62,29 +63,27 @@ namespace ChatAppClient.Service
 			StartReceive(clientSocket);
 		}
 
-		public void StartReceive(Socket soc)
+        //受信を開始
+		private void StartReceive(Socket soc)
 		{
-			AsyncStateClient so = new AsyncStateClient(soc);
+			//AsyncStateClient so = new AsyncStateClient(soc);
 			//非同期受信を開始
-			soc.BeginReceive(so.ReceiveBuffer,
+			soc.BeginReceive(ReceiveBuffer,
 				0,
-				so.ReceiveBuffer.Length,
+				ReceiveBuffer.Length,
 				SocketFlags.None,
 				new AsyncCallback(ReceiveDataCallback),
-				so);
+				this);
 		}
 
         //BeginReceiveのコールバック
-        private  void ReceiveDataCallback(IAsyncResult ar)
+        private void ReceiveDataCallback(IAsyncResult ar)
         {
-            //状態オブジェクトの取得
-            AsyncStateClient so = (AsyncStateClient)ar.AsyncState;
-
             //読み込んだ長さを取得
             int len = 0;
             try
             {
-                len = so.Socket.EndReceive(ar);
+                len = clientSocket.EndReceive(ar);
             }
             catch (ObjectDisposedException)
             {
@@ -102,55 +101,55 @@ namespace ChatAppClient.Service
             if (len <= 0)
             {
                 Console.WriteLine("切断されました。");
-                so.Socket.Close();
+                clientSocket.Close();
                 return;
             }
 
             //受信したデータを蓄積する
-            so.ReceivedData.Write(so.ReceiveBuffer, 0, len);
-            if (so.Socket.Available == 0)
+            ReceivedData.Write(ReceiveBuffer, 0, len);
+            if (clientSocket.Available == 0)
             {
                 //最後まで受信した時
                 //受信したデータを文字列に変換
                 string str = Encoding.UTF8.GetString(
-                    so.ReceivedData.ToArray());
+                    ReceivedData.ToArray());
 
-                //受信した文字列を表示
-                //確認用・実際はフォームに文字列を出力
-                System.Console.WriteLine("サーバーからsendされました：" + str);
+                //受信した文字列をコンソールに表示
+                System.Console.WriteLine("ClientService:サーバーから送信されたメッセージ：" + str);
 
+                //メッセージ受信時の処理
                 messageReceived(this,str);
 
 
-                so.ReceivedData.Close();
-                so.ReceivedData = new MemoryStream();
+                ReceivedData.Close();
+                ReceivedData = new MemoryStream();
             }
 
             //再び受信開始
-            so.Socket.BeginReceive(so.ReceiveBuffer,
+            clientSocket.BeginReceive(ReceiveBuffer,
                 0,
-                so.ReceiveBuffer.Length,
+                ReceiveBuffer.Length,
                 SocketFlags.None,
                 new AsyncCallback(ReceiveDataCallback),
-                so);
+                this);
         }
 
-        /*送信側の処理*/
-
-        //サーバーにメッセージを送信する
+        /// <summary>
+        /// サーバーにメッセージを送信する
+        /// </summary>
+        /// <param name="msg">送信する文字列</param>
         public void SendMessage(String msg)
 		{
-			//メッセージを送信する
-			//文字列をByte型配列に変換
-			byte[] sendBytes = encoding.GetBytes(msg + "\r\n");
+            //メッセージを送信する
+            //文字列をByte型配列に変換
+            byte[] sendBytes = encoding.GetBytes(msg);
 
-			lock (this)
+            lock (this)
 			{
 				//データを送信する
 				clientSocket.Send(sendBytes);
 			}
 		}
 
-
-	}
+    }
 }
