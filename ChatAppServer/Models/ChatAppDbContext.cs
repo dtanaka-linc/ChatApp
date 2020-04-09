@@ -10,9 +10,9 @@
         public DbSet<ChatLog> ChatLogs { get; set; }
 
         /// <summary>
-        /// これから書きます
+        /// エンティティの新規作成時または更新時にCreatedAtとUpdatedAtを自動で現在時刻に設定する
         /// </summary>
-        /// <returns></returns>
+        /// <returns>SaveChangesの実行結果</returns>
         public override int SaveChanges()
         {
             var now = DateTime.Now;
@@ -28,8 +28,15 @@
             return base.SaveChanges();
         }
 
+
         private static Dictionary<Type, bool> _entityHasCreatedAtDic = new Dictionary<Type, bool>();
         private static Dictionary<Type, bool> _entityHasUpdatedAtDic = new Dictionary<Type, bool>();
+
+        /// <summary>
+        /// 条件にあったCreatedAtプロパティを持つエンティティがあるするかどうかを判定する
+        /// </summary>
+        /// <param name="type">エンティティの型</param>
+        /// <returns>条件にあったCreatedAtプロパティを持つエンティティの有無</returns>
         private bool HasCreatedAt(Type type)
         {
             if (!_entityHasCreatedAtDic.ContainsKey(type))
@@ -38,6 +45,11 @@
             return _entityHasCreatedAtDic[type];
         }
 
+        /// <summary>
+        /// 条件にあったUpdatedAtプロパティを持つエンティティがあるするかどうかを判定する
+        /// </summary>
+        /// <param name="type">エンティティの型</param>
+        /// <returns>条件にあったUpdatedAtプロパティを持つエンティティの有無</returns>
         private bool HasUpdatedAt(Type type)
         {
             if (!_entityHasUpdatedAtDic.ContainsKey(type))
