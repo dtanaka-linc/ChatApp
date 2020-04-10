@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ChatAppServer.Models
 {
-    public class User
+    public class User: ModelBase
     {
         public int Id { get; set; }
         [Index(IsUnique = true)]
@@ -16,7 +16,5 @@ namespace ChatAppServer.Models
         [StringLength(256)]
         public string Name { get; set; }
         public string Password { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }
