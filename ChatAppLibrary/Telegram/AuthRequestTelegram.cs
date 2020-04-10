@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ChatAppLibrary.Telegram
@@ -22,6 +23,9 @@ namespace ChatAppLibrary.Telegram
         /// パスワード
         /// </summary>
         public string PassWord { get; set; }
+
+        public Header header { get; set; }
+
 
         /// <summary>
         /// コンストラクタ
@@ -52,9 +56,13 @@ namespace ChatAppLibrary.Telegram
         /// 送信側が必要なデータをbyte配列に変換するために使用する
         /// </summary>
         /// <returns>送信用のbyte配列</returns>
-        public byte ToTelegramText(int type, string userName, string password)
+        public byte[] ToTelegramText(int type, string userName, string password)
         {
-            throw new NotImplementedException();
+            byte[] typedata = BitConverter.GetBytes(type);
+            byte[] namedata = System.Text.Encoding.UTF8.GetBytes(userName);
+            byte[] passdata = System.Text.Encoding.UTF8.GetBytes(password);
+
+            return typedata;
         }
     }
 }

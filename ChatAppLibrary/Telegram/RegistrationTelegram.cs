@@ -24,6 +24,8 @@ namespace ChatAppLibrary.Telegram
         /// </summary>
         public string Message { get; set; }
 
+        public Header header { get; set; }
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
@@ -37,8 +39,6 @@ namespace ChatAppLibrary.Telegram
 
         public Header GetHeader()
         {
-            Header header = new Header();
-
             header.UserName = this.UserName;
 
             return header;
