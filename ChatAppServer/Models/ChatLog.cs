@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatAppServer.Models
 {
-    public class ChatLog
+    public class ChatLog: ModelBase
     {
         public int Id { get; set; }
         public string Body { get; set; }
