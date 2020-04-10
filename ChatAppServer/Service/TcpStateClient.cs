@@ -15,19 +15,17 @@ namespace ChatAppServer.Service
 
     class TcpStateClient
     {
-        public Socket Socket;
-        public byte[] ReceiveBuffer;
-        public MemoryStream ReceivedData;
-        private Encoding encoding;
-
-        //private String str;
+        private Socket Socket;
+        private byte[] ReceiveBuffer;
+        private MemoryStream ReceivedData;
+        private Encoding Encoding;
 
         public TcpStateClient(Socket soc)
         {
-            this.Socket = soc;
-            this.ReceiveBuffer = new byte[1024];
-            this.ReceivedData = new MemoryStream();
-            encoding = Encoding.UTF8;
+            Socket = soc;
+            ReceiveBuffer = new byte[1024];
+            ReceivedData = new MemoryStream();
+            Encoding = Encoding.UTF8;
         }
 
         //データ受信スタート
@@ -91,7 +89,7 @@ namespace ChatAppServer.Service
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
 
-                so.Socket.Send(encoding.GetBytes(str));
+                so.Socket.Send(Encoding.GetBytes(str));
                 
             }
 

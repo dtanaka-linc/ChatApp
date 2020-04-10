@@ -42,6 +42,9 @@ namespace ChatAppServer
             //サーバーを立ち上げる
             textBox1.Text = "受信中";
 
+            //手動接続ボタンを操作不可にする
+            button1.Enabled = false;
+
         }
 
         private void button1_Click(object sender, EventArgs e)

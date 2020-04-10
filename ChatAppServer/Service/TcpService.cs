@@ -33,7 +33,7 @@ namespace ChatAppServer.Service
         //コンストラクタ
         public TcpService()
         {
-            this.serverSocket = new Socket(AddressFamily.InterNetwork,
+            serverSocket = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
             //エンコーディングの設定
             encoding = Encoding.UTF8;
@@ -73,13 +73,10 @@ namespace ChatAppServer.Service
             Socket connectedClient = null;
             try
             {
-                lock (this)
-                {
                     connectedClient = serverSocket.EndAccept(ar);
                     Console.WriteLine("クライアント({0}:{1})と接続しました。",
                     ((IPEndPoint)connectedClient.RemoteEndPoint).Address,
                     ((IPEndPoint)connectedClient.RemoteEndPoint).Port);
-                }
             }
             catch
             {
@@ -88,7 +85,7 @@ namespace ChatAppServer.Service
                 return;
             }
 
-            //(メッセージ送信テスト・後で削除)
+            //(メッセージ送信テスト・後で修正)
             connectedClient.Send(encoding.GetBytes("TcpService：（接続確認メッセージ）"));
 
             //接続したクライアントの状態オブジェクトTcpChatClientの作成

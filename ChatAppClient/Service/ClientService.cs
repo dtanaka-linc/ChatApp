@@ -144,11 +144,9 @@ namespace ChatAppClient.Service
             //文字列をByte型配列に変換
             byte[] sendBytes = encoding.GetBytes(msg);
 
-            lock (this)
-			{
 				//データを送信する
 				clientSocket.Send(sendBytes);
-			}
+
 		}
 
     }

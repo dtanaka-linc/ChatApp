@@ -97,17 +97,17 @@ namespace ChatAppClient.ViewController
             {
                 return;
             }
-                if (this.InvokeRequired)
+            if (this.InvokeRequired)
+            {
+                this.Invoke((MethodInvoker)delegate
                 {
-                    this.Invoke((MethodInvoker)delegate { 
-                        ChatForm_MessageReceived(sender,text); 
-                    });
-                }
-                else
-                {
-                richTextBoxLog.Text ="user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
+                    ChatForm_MessageReceived(sender, text);
+                });
             }
-            
+            else
+            {
+                richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
+            }
         }
     }
 }
