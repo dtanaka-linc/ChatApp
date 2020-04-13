@@ -13,8 +13,8 @@ namespace ChatAppServer.Models
         public string Body { get; set; }
         
         /// <summary>
-        /// Userモデルとのリレーションのためのプロパティ
+        /// Userモデルとのリレーション用プロパティ
         /// </summary>
-        public User User { get; set; }
+        public virtual User User { get; set; }
     }
 }

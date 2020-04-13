@@ -79,6 +79,10 @@
     <Compile Include="Migrations\202004130226190_AddColumnToChatLogs.designer.cs">
       <DependentUpon>202004130226190_AddColumnToChatLogs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs" />
+    <Compile Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.designer.cs">
+      <DependentUpon>202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
@@ -119,6 +123,9 @@
     <Compile Include="Service\TcpService.cs" />
     <EmbeddedResource Include="Migrations\202004130226190_AddColumnToChatLogs.resx">
       <DependentUpon>202004130226190_AddColumnToChatLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.resx">
+      <DependentUpon>202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
