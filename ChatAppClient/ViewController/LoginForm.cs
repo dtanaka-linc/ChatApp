@@ -18,6 +18,8 @@ namespace ChatAppServer
         /// <param name="e"></param>
         private void LoginButton_Click(object sender, EventArgs e)
         {
+            ChatAppClient.Service.ClientService service = new ChatAppClient.Service.ClientService();
+
             //初回利用時はユーザー登録を行う
             if (radioButton1.Checked)
             {
@@ -30,16 +32,15 @@ namespace ChatAppServer
             else
             {
                 var authResult = true;
-                //User.Auth()呼び出し。
-                //とりあえず今は空のメソッド
-                authResult = this.DbConnect();
+
+                var sendText = this.MakeSendText(1, this.NameTextBox.Text, this.PasswordTextBox.Text);
+
+                service.SendMessage(sendText);
 
                 // 認証成功時に画面遷移
                 if (authResult)
                 {
-                    Form1 frm = new Form1();
-                    frm.Show();
-
+                    // Chatフォームに遷移する
                 }
                 else
                 {
@@ -49,12 +50,21 @@ namespace ChatAppServer
 
         }
 
-        // データベースに接続し認証処理を行う（User.Authが実装されたら不要になる。とりあえず処理続行のためtrueを返す）
-        private bool DbConnect()
-        {
-            return true;
-        }
+        /// <summary>
+        /// Sendメソッドに渡すために必要なデータを結合する
+        /// </summary>
+        /// <param name="type">処理種別</param>
+        /// <param name="userName">ユーザー名</param>
+        /// <param name="password">パスワード</param>
+        /// <returns></returns>
+        public string MakeSendText(int type,string userName, string password)
+        {          
+            var strArray = new[] { type.ToString(), userName, password };
 
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
+        }
 
     }
 }

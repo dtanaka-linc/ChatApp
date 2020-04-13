@@ -17,7 +17,7 @@ namespace ChatAppClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ViewController.ChatForm());
+            Application.Run(new LoginForm());
 
         }
     }
