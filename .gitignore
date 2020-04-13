@@ -1,2 +1,11 @@
-bin/
-obj/
+ ChatAppClient/bin/
+ ChatAppLibrary/bin/
+ ChatAppServer/bin/
+
+ ChatAppClient/obj/
+ ChatAppLibrary/obj/
+ ChatAppServer/obj/
+
+ /.vs/
+
+ /packages/
