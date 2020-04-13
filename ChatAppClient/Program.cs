@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatAppServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace ChatAppClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ViewController.ChatForm());
+
         }
     }
 }
