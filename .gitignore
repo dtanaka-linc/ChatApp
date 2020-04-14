@@ -1,11 +1,8 @@
- /ChatAppClient/bin/
- /ChatAppLibrary/bin/
- /ChatAppServer/bin/
-
- /ChatAppClient/obj/
- /ChatAppLibrary/obj/
- /ChatAppServer/obj/
-
- /.vs/
-
- /packages/
+  packages/
+  ChatAppClient/bin/
+  ChatAppLibrary/bin/
+  ChatAppServer/bin/
+  ChatAppClient/obj/
+  ChatAppLibrary/obj/
+  ChatAppServer/obj/
+  .vs/
