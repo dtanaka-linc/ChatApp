@@ -16,8 +16,7 @@
         public override int SaveChanges()
         {
             var now = DateTime.Now;
-            foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified
-            ))
+            foreach (var entry in ChangeTracker.Entries().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified))
             {
                 var type = entry.Entity.GetType();
                 if (entry.State == EntityState.Added && HasCreatedAt(type))
