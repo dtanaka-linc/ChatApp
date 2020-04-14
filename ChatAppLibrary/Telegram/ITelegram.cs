@@ -7,6 +7,7 @@ namespace ChatAppLibrary.Telegram
     interface ITelegram
     {
         Header GetHeader();
+
         Body GetBody();
 
     }

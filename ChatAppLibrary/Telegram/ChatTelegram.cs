@@ -10,14 +10,9 @@ namespace ChatAppLibrary.Telegram
     class ChatTelegram　: ITelegram
     {
         /// <summary>
-        /// 処理種別
+        /// 各テレグラムの共通部分
         /// </summary>
-        public int Type { get; set; }
-
-        /// <summary>
-        /// ユーザー名
-        /// </summary>
-        public string UserName { get; set; }
+        public Header header { get; set; } = new Header();
 
         /// <summary>
         /// 会話内容
@@ -30,14 +25,20 @@ namespace ChatAppLibrary.Telegram
         /// <param name="telegram"></param>
         public ChatTelegram(byte[] telegram)
         {
-            this.Type = telegram[0];
-            this.UserName = telegram[1].ToString();
-            this.Message = telegram[2].ToString();
+            // 受け取ったbyte配列をstringに戻す
+            var strTelegram = System.Text.Encoding.UTF8.GetString(telegram);
+
+            // ,区切りして配列に格納する
+            var telegramArr = strTelegram.Split(',');
+
+            this.header.Type = Convert.ToInt32(telegramArr[0]);
+            this.header.UserName = telegramArr[1].ToString();
+            this.Message = telegramArr[2].ToString();
         }
 
         public Header GetHeader()
         {
-            throw new NotImplementedException();
+            return header; ;
         }
 
         public Body GetBody()
