@@ -12,7 +12,7 @@ namespace ChatAppLibrary.Telegram
         /// <summary>
         /// 各テレグラムの共通部分
         /// </summary>
-        public Header header { get; set; }
+        public Header header { get; set; } = new Header();
 
         /// <summary>
         /// 認証結果
@@ -25,7 +25,6 @@ namespace ChatAppLibrary.Telegram
         /// <param name="telegram"></param>
         public AuthResponseTelegram(byte[] telegram)
         {
-            // "1,Name,Password"みたいなstringをbyte[]に変換したものを受け取ると仮定する
             // 受け取ったbyte配列をstringに戻す
             var strTelegram = System.Text.Encoding.UTF8.GetString(telegram);
 
@@ -34,13 +33,13 @@ namespace ChatAppLibrary.Telegram
 
             this.header.Type = Convert.ToInt32(telegramArr[0]);
             this.header.UserName = telegramArr[1].ToString();
-            //this.AuthResult = telegramArr[2].;
+            this.AuthResult = System.Convert.ToBoolean(telegramArr[2]);
         }
 
 
         public Header GetHeader()
         {
-            throw new NotImplementedException();
+            return header;
         }
 
         public Body GetBody()

@@ -8,17 +8,18 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// 認証要求のテレグラム
     /// </summary>
-    class AuthRequestTelegram : ITelegram
+    public partial class AuthRequestTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分
         /// </summary>
-        public Header header { get; set; }
+        public Header header { get; set; } = new Header();
 
         /// <summary>
         /// パスワード
         /// </summary>
         public string PassWord { get; set; }
+
 
         /// <summary>
         /// コンストラクタ
@@ -26,21 +27,25 @@ namespace ChatAppLibrary.Telegram
         /// <param name="telegram"></param>
         public AuthRequestTelegram(byte[] telegram)
         {
-            // "1,Name,Password"みたいなstringをbyte[]に変換したものを受け取ると仮定する
-            // 受け取ったbyte配列をstringに戻す
+            // 受け取ったbyte[]をstringに戻す
             var strTelegram = System.Text.Encoding.UTF8.GetString(telegram);
 
             // ,区切りして配列に格納する
             var telegramArr = strTelegram.Split(',');
 
-            this.header.Type = Convert.ToInt32(telegramArr[0]);
-            this.header.UserName = telegramArr[1].ToString();
+            // 各プロパティに値を格納
+            header.Type = Convert.ToInt32(telegramArr[0]);
+            header.UserName = telegramArr[1].ToString();
             this.PassWord = telegramArr[2].ToString();
         }
 
+        /// <summary>
+        /// 共通部分の参照に使用
+        /// </summary>
+        /// <returns>header</returns>
         public Header GetHeader()
         {
-            throw new NotImplementedException();
+            return this.header;
         }
 
         public Body GetBody()
