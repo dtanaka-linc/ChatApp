@@ -7,7 +7,7 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// 登録機能のテレグラム
     /// </summary>
-    public class RegistrationTelegram : ITelegram
+    public class RegistrationResponceTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分
@@ -15,15 +15,15 @@ namespace ChatAppLibrary.Telegram
         public Header header { get; set; } = new Header();
 
         /// <summary>
-        /// パスワード
+        /// 認証結果
         /// </summary>
-        public string PassWord { get; set; }
+        public bool AuthResult { get; set; }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="telegram"></param>
-        public RegistrationTelegram(byte[] telegram)
+        public RegistrationResponceTelegram(byte[] telegram)
         {
             // 受け取ったbyte配列をstringに戻す
             var strTelegram = System.Text.Encoding.UTF8.GetString(telegram);
@@ -33,7 +33,7 @@ namespace ChatAppLibrary.Telegram
 
             this.header.Type = Convert.ToInt32(telegramArr[0]);
             this.header.UserName = telegramArr[1].ToString();
-            this.PassWord = telegramArr[2].ToString();
+            this.AuthResult = System.Convert.ToBoolean(telegramArr[2]);
         }
 
         public Header GetHeader()
