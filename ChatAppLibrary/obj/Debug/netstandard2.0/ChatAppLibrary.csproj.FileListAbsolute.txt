@@ -1,9 +1,0 @@
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\bin\Debug\netstandard2.0\ChatAppLibrary.deps.json
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\bin\Debug\netstandard2.0\ChatAppLibrary.dll
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\bin\Debug\netstandard2.0\ChatAppLibrary.pdb
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.csprojAssemblyReference.cache
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.csproj.CoreCompileInputs.cache
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.AssemblyInfoInputs.cache
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.AssemblyInfo.cs
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.dll
-C:\Users\lcr041\source\repos\dtanaka-linc\ChatApp\ChatAppLibrary\obj\Debug\netstandard2.0\ChatAppLibrary.pdb
