@@ -7,7 +7,7 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// チャット機能のテレグラム
     /// </summary>
-    public partial class ChatTelegram　: ITelegram
+    public class ChatTelegram　: ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分

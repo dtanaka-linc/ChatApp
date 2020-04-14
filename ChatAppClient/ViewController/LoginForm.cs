@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using ChatAppClient.Service;
 using ChatAppLibrary.Telegram;
+using ChatAppLibrary.TelegramService;
 using System.Text;
 
 namespace ChatAppServer
@@ -12,9 +13,9 @@ namespace ChatAppServer
         //確認用　設定は後で外部ファイル管理する！
         String host = "localhost";
         int port = 2001;
-        int process_type = 1;
 
-        ClientService service = new ChatAppClient.Service.ClientService();
+        //　認証要求の処理番号
+        int process_type = 1;
 
         public LoginForm()
         {
@@ -28,6 +29,7 @@ namespace ChatAppServer
         /// <param name="e"></param>
         private void LoginButton_Click(object sender, EventArgs e)
         {
+            ClientService service = new ChatAppClient.Service.ClientService();
             service.messageReceived += new ClientService.ReceivedEventHandler(LoginForm_MessageReceived);          
 
             //初回利用時はユーザー登録を行う
@@ -71,8 +73,9 @@ namespace ChatAppServer
         /// <param name="text"></param>
         private void LoginForm_MessageReceived(object sender, byte[] recieveTelegram)
         {
-            var telegram = GetTelegram(recieveTelegram);
-            
+            //var telegram = GetTelegram(recieveTelegram);
+            var telegram = TelegramRogic.GetTelegram(recieveTelegram);
+
             //switch (telegram.GetHeader().Type)
             //{
 
@@ -94,32 +97,6 @@ namespace ChatAppServer
 
             return sendtext;
         }
-
-        private ITelegram GetTelegram(byte[] reciveTelegram)
-        {
-            switch (reciveTelegram[0].ToString())
-            {
-                // 認証要求
-                case "1": 
-                    return new AuthRequestTelegram(reciveTelegram);
-                    
-                // 登録要求    
-                case "2":
-                    return new RegistrationTelegram(reciveTelegram);
-　　　　　　　　
-                // チャット
-                case "3":
-                    return new ChatTelegram(reciveTelegram);
-
-                // 認証応答
-                case "4":
-                    return new AuthResponseTelegram(reciveTelegram);
-                default:
-                    throw new Exception();
-            }
-
-        }
-
 
     }
 }

@@ -31,7 +31,7 @@ namespace ChatAppClient.Service
         private byte[] ReceiveBuffer;
         private MemoryStream ReceivedData;
         //データを受信した後、チャット画面更新用のデリゲートとイベント
-        public delegate void ReceivedEventHandler(object sender, String text);
+        public delegate void ReceivedEventHandler(object sender, byte[] telegram);
         public event ReceivedEventHandler messageReceived;
 
 
@@ -39,7 +39,7 @@ namespace ChatAppClient.Service
         public ClientService()
 		{
 			clientSocket = new Socket(AddressFamily.InterNetwork,
-				SocketType.Stream, ProtocolType.Tcp);
+	            SocketType.Stream, ProtocolType.Tcp);
 
 			encoding = Encoding.UTF8;
             ReceiveBuffer = new byte[1024];
@@ -118,7 +118,7 @@ namespace ChatAppClient.Service
                 System.Console.WriteLine("ClientService:サーバーから送信されたメッセージ：" + str);
 
                 //メッセージ受信時の処理
-                messageReceived(this,str);
+                //messageReceived(this,str);
 
 
                 ReceivedData.Close();

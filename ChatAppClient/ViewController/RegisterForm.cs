@@ -49,9 +49,20 @@ namespace ChatAppClient
                     // サーバーに送信
                     service.SendMessage(sendTelegram);
 
+                    // 認証結果がtrueと受け取ったと仮定する
+                    var authResult = true;
+                    // 認証成功時に画面遷移
+                    if (authResult)
+                    {
+                        MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        // Chatフォームに遷移する
 
-
-                   // MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    }
+                    else
+                    {
+                        MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    
                 }
             }
             else
