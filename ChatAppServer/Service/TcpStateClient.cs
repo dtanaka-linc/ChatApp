@@ -95,7 +95,6 @@ namespace ChatAppServer.Service
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
 
-                //so.Socket.Send(Encoding.GetBytes(str));
                 //メッセージ受信時の処理
                 messageReceived(str);
 
