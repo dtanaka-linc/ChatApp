@@ -21,7 +21,7 @@ namespace ChatAppServer.Service
         private Encoding Encoding;
 
         //データを受信した後、全体にメッセージ送信用のデリゲートとイベント
-        public delegate void ReceivedEventHandler(String text);
+        public delegate void ReceivedEventHandler(byte[] receivedBytes);
         public event ReceivedEventHandler messageReceived;
 
 
@@ -95,8 +95,10 @@ namespace ChatAppServer.Service
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
 
+                byte[] receivedBytes = Encoding.UTF8.GetBytes(str);
+
                 //メッセージ受信時の処理
-                messageReceived(str);
+                messageReceived(receivedBytes);
 
             }
 
@@ -108,6 +110,7 @@ namespace ChatAppServer.Service
                 new AsyncCallback(ReceiveDataCallback),
                 so);
         }
+
 
 
     }
