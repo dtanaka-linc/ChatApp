@@ -12,6 +12,9 @@ namespace ChatAppServer
         //確認用　設定は後で外部ファイル管理する！
         String host = "localhost";
         int port = 2001;
+        int process_type = 1;
+
+        ClientService service = new ChatAppClient.Service.ClientService();
 
         public LoginForm()
         {
@@ -25,9 +28,7 @@ namespace ChatAppServer
         /// <param name="e"></param>
         private void LoginButton_Click(object sender, EventArgs e)
         {
-            ClientService service = new ChatAppClient.Service.ClientService();
-            service.messageReceived += new ClientService.ReceivedEventHandler(LoginForm_MessageReceived);
-            service.Connect(host,port);
+            service.messageReceived += new ClientService.ReceivedEventHandler(LoginForm_MessageReceived);          
 
             //初回利用時はユーザー登録を行う
             if (radioButton1.Checked)
@@ -40,36 +41,20 @@ namespace ChatAppServer
             }
             else
             {
-                //----------------------------------------------------------------------------------------------------------------
+                service.Connect(host, port);
                 // 送信するデータの作成（string）
-                // ↓
-                // byte[]変換（実装時はSend()内で行う）
-                // ↓
-                // テレグラムにデータセット、値をとれるか確認
-                // ここまで試してみる
+                var sendText = this.MakeSendText(process_type, this.NameTextBox.Text, this.PasswordTextBox.Text);
 
-                // 送信するデータの作成（string）
-                var sendText = this.MakeSendText(1, this.NameTextBox.Text, this.PasswordTextBox.Text);
+                // サーバーにデータを送信
+                service.SendMessage(sendText);
 
-                // byte[]変換（実装時はSend()内で行う）
-                //service.SendMessage(sendText);   
-                var sendTelegram = this.Confirm(sendText);
-
-                // 上記のbyte[]を受け取ったと仮定してテレグラムに引数で渡す
-                // 本実装時はクライアント側なので応答のテレグラムに渡すがとりあえずテストで違うのに渡す
-                var telegram = new AuthRequestTelegram(sendTelegram);
-
-                // 登録したデータを参照して出力してみる
-                Console.WriteLine(telegram.GetHeader().Type.ToString());
-                Console.WriteLine(telegram.GetHeader().UserName.ToString());
-                Console.WriteLine(telegram.PassWord);
-                //----------------------------------------------------------------------------------------------------------------
-
+                // 認証結果がtrueと受け取ったと仮定する
                 var authResult = true;
                 // 認証成功時に画面遷移
                 if (authResult)
                 {
                     // Chatフォームに遷移する
+                    
                 }
                 else
                 {
@@ -84,9 +69,14 @@ namespace ChatAppServer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="text"></param>
-        private void LoginForm_MessageReceived(object sender, string text)
+        private void LoginForm_MessageReceived(object sender, byte[] recieveTelegram)
         {
-            throw new NotImplementedException();
+            var telegram = GetTelegram(recieveTelegram);
+            
+            //switch (telegram.GetHeader().Type)
+            //{
+
+            //}
         }
 
         /// <summary>
@@ -105,12 +95,31 @@ namespace ChatAppServer
             return sendtext;
         }
 
-        private byte[] Confirm(string str)
+        private ITelegram GetTelegram(byte[] reciveTelegram)
         {
-            //メッセージを送信する
-            //文字列をByte型配列に変換
-            byte[] sendBytes = Encoding.UTF8.GetBytes(str);
-            return sendBytes;
+            switch (reciveTelegram[0].ToString())
+            {
+                // 認証要求
+                case "1": 
+                    return new AuthRequestTelegram(reciveTelegram);
+                    
+                // 登録要求    
+                case "2":
+                    return new RegistrationTelegram(reciveTelegram);
+　　　　　　　　
+                // チャット
+                case "3":
+                    return new ChatTelegram(reciveTelegram);
+
+                // 認証応答
+                case "4":
+                    return new AuthResponseTelegram(reciveTelegram);
+                default:
+                    throw new Exception();
+            }
+
         }
+
+
     }
 }

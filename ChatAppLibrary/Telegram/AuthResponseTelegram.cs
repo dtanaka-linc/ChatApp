@@ -7,7 +7,7 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// 認証要求のテレグラム
     /// </summary>
-    class AuthResponseTelegram : ITelegram
+    public partial class AuthResponseTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分

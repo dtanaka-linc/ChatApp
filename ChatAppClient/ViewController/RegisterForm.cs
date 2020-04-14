@@ -1,23 +1,22 @@
-﻿using System;
+﻿using ChatAppClient.Service;
+using System;
 using System.Windows.Forms;
 
 namespace ChatAppClient
 {
     public partial class RegisterForm : Form
     {
-        private string _userNameParam;
+        public string userNameParam { get; set; }
 
-        public string userNameParam
-        {
-            get
-            {
-                return _userNameParam;
-            }
-            set
-            {
-                _userNameParam = value;
-            }
-        }
+        String host = "localhost";
+        int port = 2001;
+
+        /// <summary>
+        /// 処理種別
+        /// </summary>
+        int process_type = 2;
+
+        ClientService service = new ChatAppClient.Service.ClientService();
 
         public RegisterForm()
         {
@@ -31,7 +30,7 @@ namespace ChatAppClient
         /// <param name="e"></param>
         private void RegisterButton_Click(object sender, EventArgs e)
         {
-            if(userNameTextBox.Text != "")
+            if(userNameTextBox.Text != ""　&& passTextBox.Text != "")
             {
                 // パスワードと確認用の入力が一致しない場合は警告する
                 if (passTextBox.Text != confirmTextBox.Text)
@@ -42,10 +41,17 @@ namespace ChatAppClient
                 }
                 else
                 {
-                    // User.UserCreateに処理委譲
-                    // passTextBoxの入力内容とユーザー名のテキストを渡す
-                    // とりあえず動確のためメッセージボックスに登録完了と表示する
-                    MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    service.Connect(host, port);
+
+                    // 送信可能なようにデータを結合
+                    var sendTelegram = this.MakeSendText(process_type, userNameTextBox.Text, passTextBox.Text);
+
+                    // サーバーに送信
+                    service.SendMessage(sendTelegram);
+
+
+
+                   // MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 }
             }
             else
@@ -67,5 +73,20 @@ namespace ChatAppClient
             this.userNameTextBox.Text = userNameParam;
         }
 
+        /// <summary>
+        /// Sendメソッドに渡すために必要なデータを結合する
+        /// </summary>
+        /// <param name="type">処理種別</param>
+        /// <param name="userName">ユーザー名</param>
+        /// <param name="password">パスワード</param>
+        /// <returns></returns>
+        public string MakeSendText(int type, string userName, string password)
+        {
+            var strArray = new[] { type.ToString(), userName, password };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
+        }
     }
 }

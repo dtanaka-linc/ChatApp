@@ -25,11 +25,11 @@ namespace ChatAppClient.Service
 		//ソケットのエンドポイント
 		private IPEndPoint socketEP;
         //文字コード
+
 		private Encoding encoding;
 
         private byte[] ReceiveBuffer;
         private MemoryStream ReceivedData;
-
         //データを受信した後、チャット画面更新用のデリゲートとイベント
         public delegate void ReceivedEventHandler(object sender, String text);
         public event ReceivedEventHandler messageReceived;
