@@ -91,23 +91,23 @@ namespace ChatAppClient.ViewController
         }
 
         //データ受信時にイベント発火！　チャット画面を更新する
-        private void ChatForm_MessageReceived(object sender,String text)
+        private void ChatForm_MessageReceived(object sender,byte[] telegram)
         {
-            if (this.IsDisposed)
-            {
-                return;
-            }
-            if (this.InvokeRequired)
-            {
-                this.Invoke((MethodInvoker)delegate
-                {
-                    ChatForm_MessageReceived(sender, text);
-                });
-            }
-            else
-            {
-                richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
-            }
+            //if (this.IsDisposed)
+            //{
+            //    return;
+            //}
+            //if (this.InvokeRequired)
+            //{
+            //    this.Invoke((MethodInvoker)delegate
+            //    {
+            //        ChatForm_MessageReceived(sender, text);
+            //    });
+            //}
+            //else
+            //{
+            //    richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
+            //}
         }
     }
 }
