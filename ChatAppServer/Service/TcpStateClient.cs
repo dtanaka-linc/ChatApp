@@ -15,10 +15,15 @@ namespace ChatAppServer.Service
 
     class TcpStateClient
     {
-        private Socket Socket;
+        public Socket Socket;
         private byte[] ReceiveBuffer;
         private MemoryStream ReceivedData;
         private Encoding Encoding;
+
+        //データを受信した後、全体にメッセージ送信用のデリゲートとイベント
+        public delegate void ReceivedEventHandler(String text);
+        public event ReceivedEventHandler messageReceived;
+
 
         public TcpStateClient(Socket soc)
         {
@@ -26,6 +31,7 @@ namespace ChatAppServer.Service
             ReceiveBuffer = new byte[1024];
             ReceivedData = new MemoryStream();
             Encoding = Encoding.UTF8;
+
         }
 
         //データ受信スタート
@@ -89,8 +95,10 @@ namespace ChatAppServer.Service
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
 
-                so.Socket.Send(Encoding.GetBytes(str));
-                
+                //so.Socket.Send(Encoding.GetBytes(str));
+                //メッセージ受信時の処理
+                messageReceived(str);
+
             }
 
             //再び受信開始
