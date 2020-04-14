@@ -41,19 +41,20 @@ namespace ChatAppServer.Repository
 
         // UserServiceのAuthメソッドから検索させるために新しくメソッドを追加しました
         /// <summary>
-        ///
+        ///UserServiceのResisterメソッドから渡されたユーザー名・パスワードの組み合わせが存在するかどうかを確認する
         /// </summary>
-        /// <param name="userName"></param>
-        /// <param name="password"></param>
+        ///<param name="userName">ユーザー名</param>
+        ///<param name="password">パスワード</param>
         /// <returns></returns>
-        public IQueryable<User> Auth(string userName, string password)
+        public bool Auth(string userName, string password)
         {
-            return this.DbContext.Users.Where(r => r.Name == userName).Where(r => r.Password == password);
+            //二つのカラムのが条件にあっているかを確認するための記述がわからない...
+            return this.DbContext.Users.All(r => r.Name == userName).Where(r => r.Password == password);
         }
 
 
         /// <summary>
-        /// 新規登録フォームで入力されたユーザー名と同名のレコードが存在するかどうかを確認する
+        /// UserServiceのResisterメソッドから渡されたユーザー名と同名のレコードが存在するかどうかを確認する
         /// </summary>
         /// <param name="userName"></param>
         /// <returns>入力されたユーザー名の同名のレコードの有無</returns>

@@ -11,26 +11,39 @@ namespace ChatAppServer.Service
 {
     public class UserService
     {
+        //UserRepostirotyのインスタンスに渡すChatAppDbContextの宣言はこれでよいでしょうか？
+        private ChatAppDbContext _context = new ChatAppDbContext();
+
         /// <summary>
         /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、ユーザー名の重複がなければUserRepositoryのCreateUserメソッドへデータを受け渡す
         /// </summary>
         /// <param name="registrationData">RegistrationTelegramで文字列に戻されたユーザー名やパスワード</param>
         /// <returns></returns>
-        public User Register(RegistrationTelegram registrationData)   //RegistrationTelegramがpublicになっていないため
+        //CreateUserでSaveChangesのあとに新しく追加したUser型のデータが返ってくると思ったのですが、「値を返さないコードパスがあります」となってしまいます。
+        public User Register(RegistrationTelegram registrationData)
         {
-            private string userName = resistrationData.header.UserName;
-            private string PassWord = resistrationData.PassWord;
-        //ユーザー名の重複がなければCreateUserにデータを渡し新規追加したUsersのデータを返す(なんか違和感がある...)
-            if(UserRepository.ExistUserName(userName)){
-                return UserRepository.CreateUser(userName, password);
+            var userName = registrationData.header.UserName;
+            var PassWord = registrationData.PassWord;
+            UserRepository userRepository = new UserRepository(_context);　//コンストラクタとしてChatAppDbContextを設定していますがどのように渡せばよいかがわかりません...
+
+            //ユーザー名の重複がなければCreateUserにデータを渡し新規追加したUsersのデータを返す(なんか違和感がある...)
+            if (userRepository.ExistsUserName(userName)){
+                return userRepository.CreateUser(userName, PassWord);
             }
         }
 
+
+        /// <summary>
+        /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、データの照会結果をboolで返す
+        /// </summary>
+        /// <param name="authRequestData"></param>
         public void Auth(AuthRequestTelegram authRequestData)
         {
-            private string userName = authRequestData.header.UserName;
-            private string password = authRequestData.Password;
-            UserRepository.Auth(userName, password);
+            UserRepository userRepository = new UserRepository(_context);
+
+            var userName = authRequestData.header.UserName;
+            var password = authRequestData.PassWord;
+            userRepository.Auth(userName, password);
         }
     }
 }
