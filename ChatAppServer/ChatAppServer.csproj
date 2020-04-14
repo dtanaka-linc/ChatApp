@@ -105,6 +105,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="Service\UserService.cs" />
     <EmbeddedResource Include="Migrations\202004021230279_CreateUser.resx">
       <DependentUpon>202004021230279_CreateUser.cs</DependentUpon>
     </EmbeddedResource>
@@ -115,7 +116,7 @@
     <Compile Include="Service\TcpService.cs" />
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
-	</EmbeddedResource>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004080800426_AddColumnsToUsers.resx">
       <DependentUpon>202004080800426_AddColumnsToUsers.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,6 +157,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatAppLibrary\ChatAppLibrary.csproj">
+      <Project>{e4c5b9a4-cdc6-479c-aeb4-2b312895a589}</Project>
+      <Name>ChatAppLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

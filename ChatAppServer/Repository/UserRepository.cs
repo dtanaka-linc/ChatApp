@@ -7,7 +7,7 @@ using ChatAppServer.Models;
 namespace ChatAppServer.Repository
 {
     /// <summary>
-    /// Userモデルにアクセスし新規登録や認証を行うメソッド群
+    /// Userモデルに+アクセスし新規登録や認証を行うメソッド群
     /// </summary>
     public class UserRepository
     {
@@ -39,15 +39,16 @@ namespace ChatAppServer.Repository
             return user;
         }
 
-
+        // UserServiceのAuthメソッドから検索させるために新しくメソッドを追加しました
         /// <summary>
-        /// ユーザー名で検索する
+        ///
         /// </summary>
-        /// <param name="userName">ユーザー名</param>
-        /// <returns>ユーザー名で検索した結果</returns>
-        public IQueryable<User> FindByUserName(string userName)
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public IQueryable<User> Auth(string userName, string password)
         {
-            return this.DbContext.Users.Where(r => r.Name == userName);
+            return this.DbContext.Users.Where(r => r.Name == userName).Where(r => r.Password == password);
         }
 
 
