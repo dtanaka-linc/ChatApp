@@ -56,35 +56,20 @@
     <Compile Include="ViewController\ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoginForm.cs">
+    <Compile Include="ViewController\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LoginForm.Designer.cs">
+    <Compile Include="ViewController\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="LoginUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="LoginUserControl.Designer.cs">
-      <DependentUpon>LoginUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RegisterForm.cs">
+    <Compile Include="ViewController\RegisterForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RegisterForm.Designer.cs">
+    <Compile Include="ViewController\RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="RegisterUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="RegisterUserControl.Designer.cs">
-      <DependentUpon>RegisterUserControl.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="LoginForm.resx">
+    <EmbeddedResource Include="ViewController\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LoginUserControl.resx">
-      <DependentUpon>LoginUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -95,11 +80,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="RegisterForm.resx">
+    <EmbeddedResource Include="ViewController\RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RegisterUserControl.resx">
-      <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ViewController\ChatForm.resx">
       <DependentUpon>ChatForm.cs</DependentUpon>
@@ -116,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatAppLibrary\ChatAppLibrary.csproj">
+      <Project>{e4c5b9a4-cdc6-479c-aeb4-2b312895a589}</Project>
+      <Name>ChatAppLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

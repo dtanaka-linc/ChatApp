@@ -33,7 +33,7 @@
             this.passwordlabel = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.PasswordTextBox = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -87,12 +87,12 @@
             this.radioButton2.Text = "登録済みの場合パスワードを入力";
             this.radioButton2.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // PasswordTextBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(492, 249);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(203, 31);
-            this.textBox1.TabIndex = 6;
+            this.PasswordTextBox.Location = new System.Drawing.Point(492, 249);
+            this.PasswordTextBox.Name = "PasswordTextBox";
+            this.PasswordTextBox.Size = new System.Drawing.Size(203, 31);
+            this.PasswordTextBox.TabIndex = 6;
             // 
             // button1
             // 
@@ -110,7 +110,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 436);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.PasswordTextBox);
             this.Controls.Add(this.radioButton2);
             this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.passwordlabel);
@@ -131,7 +131,7 @@
         private System.Windows.Forms.Label passwordlabel;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.Button button1;
     }
 }
