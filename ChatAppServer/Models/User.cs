@@ -16,5 +16,10 @@ namespace ChatAppServer.Models
         [StringLength(256)]
         public string Name { get; set; }
         public string Password { get; set; }
+
+        /// <summary>
+        /// ChatLogモデルとのリレーション用プロパティ
+        /// </summary>
+        public virtual ICollection<ChatLog> ChatLogs { get; set; }
     }
 }
