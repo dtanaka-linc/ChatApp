@@ -122,15 +122,15 @@ namespace ChatAppServer.Service
             {
                 case "49":
                     Console.WriteLine("認証");
-                    ReceiveAuth(client,telegram);
+                    SendAuth(client,telegram);
                     break;
                 case "50":
                     Console.WriteLine("登録");
-                    ReceiveResister(client,telegram);
+                    SendResister(client,telegram);
                     break;
                 case "51":
                     Console.WriteLine("チャット");
-                    ReceiveChat(telegram);
+                    SendChat(telegram);
                     break;
                 default:
                     Console.WriteLine("エラー");
@@ -139,12 +139,14 @@ namespace ChatAppServer.Service
             }
         }
 
-        private void ReceiveAuth(TcpStateClient stateClient, byte[] telegram)
+        private void SendAuth(TcpStateClient stateClient, byte[] telegram)
         {
             //受信したバイトをテレグラムに
             ITelegram receiveIt = new AuthRequestTelegram(telegram);
 
-            //確認用の仮の値
+            //UserService.Auth：DBと接続して認証
+
+            //確認用の仮の値(UserServiceを使うときに削除)
             Boolean authResult = true;
 
             string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
@@ -153,22 +155,22 @@ namespace ChatAppServer.Service
 
         }
 
-        private void ReceiveResister(TcpStateClient stateClient, byte[] telegram)
+        private void SendResister(TcpStateClient stateClient, byte[] telegram)
         {
-            //Itelegramにプロパティがまだないのでいったんコメントアウト
+            //Itelegramにプロパティがないのでいったんコメントアウト
             //ITelegram receiveIt = new RegistrationTelegram(telegram);
             RegistrationTelegram receiveIt = new RegistrationTelegram(telegram);
 
-            //void User.Auth：DBと接続して新規登録
+            //UserService.Register：DBと接続して新規登録
 
             string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
 
             SendClientMessage(stateClient, str);
         }
 
-        private void ReceiveChat(byte[] telegram)
+        private void SendChat(byte[] telegram)
         {
-            //Itelegramにプロパティがまだないのでいったんコメントアウト
+            //Itelegramにプロパティがないのでいったんコメントアウト
             //ITelegram receiveIt = new ChatTelegram(telegram);
             ChatTelegram receiveIt = new ChatTelegram(telegram);
 
