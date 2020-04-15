@@ -63,16 +63,8 @@ namespace ChatAppServer.Service
             var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
-            //UserRepositoryのAuthメソッドの結果を格納する変数　代入しなくていいかな？？
-            var authResult = UserRepository.Auth(userName, password);
-
-            //Authメソッドで該当するレコードがあればtrue、なければfalseを返す
-            if (authResult != null)
-            {
-                return true;
-            }
-            return false;
-            }
+            //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とパスワードの組み合わせのデータがあればtrue、なければfalse)
+            return UserRepository.Auth(userName, password);
         }
     }
 }

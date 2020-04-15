@@ -49,10 +49,11 @@ namespace ChatAppServer.Repository
         /// </summary>
         ///<param name="userName">UserServiceのAuthメソッドから渡されたユーザー名</param>
         ///<param name="password">UserServiceのAuthメソッドから渡されたパスワード</param>
-        /// <returns>Usersテーブルの該当するレコードの内容</returns>
-        public IQueryable<User> Auth(string userName, string password)
+        /// <returns>該当するユーザー名とパスワードの組み合わせのレコードがあればtrue、なければfalse</returns>
+        public bool Auth(string userName, string password)
         {
-            return this.DbContext.Users.Where(r => r.Name == userName).Where(r => r.Password == password);
+            //ユーザー名が一致したレコードに対してパスワードが存在するかを調べる
+            return this.DbContext.Users.Where(r => r.Name == userName).Any(r => r.Password == password);
         }
 
 
