@@ -92,7 +92,7 @@ namespace ChatAppServer.Service
 
             //(メッセージ送信テスト・後で修正)
             //connectedClient.Send(encoding.GetBytes("TcpService：（接続確認メッセージ）"));
-
+            
             //接続したクライアントの状態オブジェクトTcpChatClientの作成
             TcpStateClient client = new TcpStateClient(connectedClient);
 
@@ -110,17 +110,11 @@ namespace ChatAppServer.Service
         }
 
         //受信したデータを送り返すメソッド
-        private void SendTelegram(byte[] receivedBytes)
-        {
-
-            ReceiveTelegram(receivedBytes);
-        }
-
-        private void ReceiveTelegram(byte[] telegram)
+        private void SendTelegram(TcpStateClient client,byte[] telegram)
         {
             //先頭１バイトの値を取得
             //バイト→数値への変換はあとで考える
-            String identifier = telegram[0].ToString();
+            string identifier = telegram[0].ToString();
 
             ITelegram it;
 
@@ -128,11 +122,11 @@ namespace ChatAppServer.Service
             {
                 case "49":
                     Console.WriteLine("認証");
-                    ReceiveAuth(telegram);
+                    ReceiveAuth(client,telegram);
                     break;
                 case "50":
                     Console.WriteLine("登録");
-                    ReceiveResister(telegram);
+                    ReceiveResister(client,telegram);
                     break;
                 case "51":
                     Console.WriteLine("チャット");
@@ -145,29 +139,21 @@ namespace ChatAppServer.Service
             }
         }
 
-        private void ReceiveAuth(byte[] telegram)
+        private void ReceiveAuth(TcpStateClient stateClient, byte[] telegram)
         {
             //受信したバイトをテレグラムに
             ITelegram receiveIt = new AuthRequestTelegram(telegram);
 
-/*            Console.WriteLine("ReceiveAuth:" + receiveIt.GetHeader().Type.ToString());
-            Console.WriteLine("ReceiveAuth:" + receiveIt.GetHeader().UserName.ToString());*/
-
-            //Boolean User.Auth：DBと接続してbooleanの値を取得する
-
             //確認用の仮の値
             Boolean authResult = true;
 
-            String str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
 
-            SendAllClientMessage(str);
-
-/*          byte[] sendBytes = Encoding.UTF8.GetBytes(str);
-            ITelegram sendIt = new AuthResponseTelegram(sendBytes);*/
+            SendClientMessage(stateClient,str);
 
         }
 
-        private void ReceiveResister(byte[] telegram)
+        private void ReceiveResister(TcpStateClient stateClient, byte[] telegram)
         {
             //Itelegramにプロパティがまだないのでいったんコメントアウト
             //ITelegram receiveIt = new RegistrationTelegram(telegram);
@@ -175,9 +161,9 @@ namespace ChatAppServer.Service
 
             //void User.Auth：DBと接続して新規登録
 
-            String str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
 
-            SendAllClientMessage(str);
+            SendClientMessage(stateClient, str);
         }
 
         private void ReceiveChat(byte[] telegram)
@@ -189,18 +175,53 @@ namespace ChatAppServer.Service
             Console.WriteLine(receiveIt.GetHeader().Type.ToString());
             Console.WriteLine(receiveIt.GetHeader().UserName.ToString());
 
-            String str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.Message);
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.Message);
 
             SendAllClientMessage(str);
 
         }
 
-        //接続中の全てのクライアントにメッセージを送信
-        public void SendAllClientMessage(String str)
+        /// <summary>
+        /// クライアントにメッセージを送信（認証・新規登録）
+        /// </summary>
+        /// <param name="stateClient">認証・新規登録をしようとしているクライアント</param>
+        /// <param name="str">送信するメッセージ（String）</param>
+        public void SendClientMessage(TcpStateClient stateClient,string str)
+        {
+                    stateClient.Socket.Send(Encoding.UTF8.GetBytes(str));
+        }
+
+        /// <summary>
+        /// クライアントにメッセージを送信（認証・新規登録）
+        /// </summary>
+        /// <param name="stateClient">認証・新規登録をしようとしているクライアント</param>
+        /// <param name="str">送信するメッセージ（byte[]）</param>
+        public void SendClientMessage(TcpStateClient stateClient, byte[] str)
+        {
+            stateClient.Socket.Send(str);
+        }
+
+        /// <summary>
+        /// 接続中の全てのクライアントにメッセージを送信（チャット）
+        /// </summary>
+        /// <param name="str">送信するメッセージ（String）</param>
+        public void SendAllClientMessage(string str)
         {
             foreach (TcpStateClient client in acceptedClients)
             {
-                client.Socket.Send(Encoding.UTF8.GetBytes(str));
+                    client.Socket.Send(Encoding.UTF8.GetBytes(str));
+            }
+        }
+
+        /// <summary>
+        /// 接続中の全てのクライアントにメッセージを送信（チャット）
+        /// </summary>
+        /// <param name="str">送信するメッセージ（byte[]）</param>
+        public void SendAllClientMessage(byte[] str)
+        {
+            foreach (TcpStateClient client in acceptedClients)
+            {
+                client.Socket.Send(str);
             }
         }
 
@@ -214,7 +235,7 @@ namespace ChatAppServer.Service
             return sendtext;
         }
 
-        public string MakeSendText(int type, string userName, String message)
+        public string MakeSendText(int type, string userName, string message)
         {
             var strArray = new[] { type.ToString(), userName, message };
 

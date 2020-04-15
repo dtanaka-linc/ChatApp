@@ -21,9 +21,8 @@ namespace ChatAppServer.Service
         private Encoding Encoding;
 
         //データを受信した後、全体にメッセージ送信用のデリゲートとイベント
-        public delegate void ReceivedEventHandler(byte[] receivedBytes);
+        public delegate void ReceivedEventHandler(TcpStateClient stateClient,byte[] receivedBytes);
         public event ReceivedEventHandler messageReceived;
-
 
         public TcpStateClient(Socket soc)
         {
@@ -85,7 +84,7 @@ namespace ChatAppServer.Service
             {
                 //最後まで受信した時
                 //受信したデータを文字列に変換
-                String str = Encoding.UTF8.GetString(
+                string str = Encoding.UTF8.GetString(
                     so.ReceivedData.ToArray());
 
                 //受信した文字列を表示
@@ -98,7 +97,7 @@ namespace ChatAppServer.Service
                 byte[] receivedBytes = Encoding.UTF8.GetBytes(str);
 
                 //メッセージ受信時の処理
-                messageReceived(receivedBytes);
+                messageReceived(this,receivedBytes);
 
             }
 
