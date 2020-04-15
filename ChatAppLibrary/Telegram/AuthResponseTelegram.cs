@@ -7,12 +7,12 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// 認証要求のテレグラム
     /// </summary>
-    class AuthResponseTelegram : ITelegram
+    public class AuthResponseTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分
         /// </summary>
-        public Header header { get; set; } = new Header();
+        private Header header { get; set; } = new Header();
 
         /// <summary>
         /// 認証結果

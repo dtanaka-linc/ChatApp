@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ChatAppLibrary.Telegram
 {
-    interface ITelegram
+    public interface ITelegram
     {
         Header GetHeader();
 

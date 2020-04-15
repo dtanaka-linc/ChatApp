@@ -15,10 +15,21 @@ namespace ChatAppServer.Service
 
     class TcpStateClient
     {
-        private Socket Socket;
+        private Socket socket;
+
+        public Socket Socket
+        {
+            set { this.socket = value; }
+            get { return this.socket; }
+        }
+
         private byte[] ReceiveBuffer;
         private MemoryStream ReceivedData;
         private Encoding Encoding;
+
+        //データを受信した後、全体にメッセージ送信用のデリゲートとイベント
+        public delegate void ReceivedEventHandler(TcpStateClient stateClient,byte[] receivedBytes);
+        public event ReceivedEventHandler messageReceived;
 
         public TcpStateClient(Socket soc)
         {
@@ -26,6 +37,7 @@ namespace ChatAppServer.Service
             ReceiveBuffer = new byte[1024];
             ReceivedData = new MemoryStream();
             Encoding = Encoding.UTF8;
+
         }
 
         //データ受信スタート
@@ -79,7 +91,7 @@ namespace ChatAppServer.Service
             {
                 //最後まで受信した時
                 //受信したデータを文字列に変換
-                String str = Encoding.UTF8.GetString(
+                string str = Encoding.UTF8.GetString(
                     so.ReceivedData.ToArray());
 
                 //受信した文字列を表示
@@ -89,8 +101,11 @@ namespace ChatAppServer.Service
                 so.ReceivedData.Close();
                 so.ReceivedData = new MemoryStream();
 
-                so.Socket.Send(Encoding.GetBytes(str));
-                
+                byte[] receivedBytes = Encoding.UTF8.GetBytes(str);
+
+                //メッセージ受信時の処理
+                messageReceived(this,receivedBytes);
+
             }
 
             //再び受信開始
@@ -101,6 +116,7 @@ namespace ChatAppServer.Service
                 new AsyncCallback(ReceiveDataCallback),
                 so);
         }
+
 
 
     }

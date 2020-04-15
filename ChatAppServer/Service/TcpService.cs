@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections;
 using System.Threading;
+using ChatAppLibrary.Telegram;
 
 namespace ChatAppServer.Service
 {
@@ -30,6 +31,8 @@ namespace ChatAppServer.Service
         private IPEndPoint socketEP;
         private Encoding encoding;
 
+        public static ArrayList acceptedClients;
+
         //コンストラクタ
         public TcpService()
         {
@@ -37,6 +40,8 @@ namespace ChatAppServer.Service
                 SocketType.Stream, ProtocolType.Tcp);
             //エンコーディングの設定
             encoding = Encoding.UTF8;
+            //接続中のクライアントのコレクション
+            acceptedClients = new ArrayList();
 
         }
 
@@ -86,10 +91,16 @@ namespace ChatAppServer.Service
             }
 
             //(メッセージ送信テスト・後で修正)
-            connectedClient.Send(encoding.GetBytes("TcpService：（接続確認メッセージ）"));
-
+            //connectedClient.Send(encoding.GetBytes("TcpService：（接続確認メッセージ）"));
+            
             //接続したクライアントの状態オブジェクトTcpChatClientの作成
             TcpStateClient client = new TcpStateClient(connectedClient);
+
+            //接続中のクライアントのコレクションに追加
+            acceptedClients.Add(client);
+
+            //メッセージ受信時にTcpServiceのメッセージ送信処理を発火させる
+            client.messageReceived += new TcpStateClient.ReceivedEventHandler(SendTelegram);
 
             //受信状態にさせる
             client.StartReceive(connectedClient);
@@ -97,5 +108,145 @@ namespace ChatAppServer.Service
             //接続要求施行を再開する
             serverSocket.BeginAccept(new AsyncCallback(this.AcceptCallback), null);
         }
+
+        //受信したデータを送り返すメソッド
+        private void SendTelegram(TcpStateClient client,byte[] telegram)
+        {
+            //先頭１バイトの値を取得
+            //バイト→数値への変換はあとで考える
+            string identifier = telegram[0].ToString();
+
+            ITelegram it;
+
+            switch (identifier)
+            {
+                case "49":
+                    Console.WriteLine("認証");
+                    SendAuth(client,telegram);
+                    break;
+                case "50":
+                    Console.WriteLine("登録");
+                    SendResister(client,telegram);
+                    break;
+                case "51":
+                    Console.WriteLine("チャット");
+                    SendChat(telegram);
+                    break;
+                default:
+                    Console.WriteLine("エラー");
+                    //何かしらのエラー処理をあとでいれる
+                    throw new Exception();
+            }
+        }
+
+        private void SendAuth(TcpStateClient stateClient, byte[] telegram)
+        {
+            //受信したバイトをテレグラムに
+            ITelegram receiveIt = new AuthRequestTelegram(telegram);
+
+            //UserService.Auth：DBと接続して認証
+
+            //確認用の仮の値(UserServiceを使うときに削除)
+            Boolean authResult = true;
+
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
+
+            SendClientMessage(stateClient,str);
+
+        }
+
+        private void SendResister(TcpStateClient stateClient, byte[] telegram)
+        {
+            //Itelegramにプロパティがないのでいったんコメントアウト
+            //ITelegram receiveIt = new RegistrationTelegram(telegram);
+            RegistrationTelegram receiveIt = new RegistrationTelegram(telegram);
+
+            //UserService.Register：DBと接続して新規登録
+
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
+
+            SendClientMessage(stateClient, str);
+        }
+
+        private void SendChat(byte[] telegram)
+        {
+            //Itelegramにプロパティがないのでいったんコメントアウト
+            //ITelegram receiveIt = new ChatTelegram(telegram);
+            ChatTelegram receiveIt = new ChatTelegram(telegram);
+
+            Console.WriteLine(receiveIt.GetHeader().Type.ToString());
+            Console.WriteLine(receiveIt.GetHeader().UserName.ToString());
+
+            string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.Message);
+
+            SendAllClientMessage(str);
+
+        }
+
+        /// <summary>
+        /// クライアントにメッセージを送信（認証・新規登録）
+        /// </summary>
+        /// <param name="stateClient">認証・新規登録をしようとしているクライアント</param>
+        /// <param name="str">送信するメッセージ（String）</param>
+        public void SendClientMessage(TcpStateClient stateClient,string str)
+        {
+                    stateClient.Socket.Send(Encoding.UTF8.GetBytes(str));
+        }
+
+        /// <summary>
+        /// クライアントにメッセージを送信（認証・新規登録）
+        /// </summary>
+        /// <param name="stateClient">認証・新規登録をしようとしているクライアント</param>
+        /// <param name="str">送信するメッセージ（byte[]）</param>
+        public void SendClientMessage(TcpStateClient stateClient, byte[] str)
+        {
+            stateClient.Socket.Send(str);
+        }
+
+        /// <summary>
+        /// 接続中の全てのクライアントにメッセージを送信（チャット）
+        /// </summary>
+        /// <param name="str">送信するメッセージ（String）</param>
+        public void SendAllClientMessage(string str)
+        {
+            foreach (TcpStateClient client in acceptedClients)
+            {
+                    client.Socket.Send(Encoding.UTF8.GetBytes(str));
+            }
+        }
+
+        /// <summary>
+        /// 接続中の全てのクライアントにメッセージを送信（チャット）
+        /// </summary>
+        /// <param name="str">送信するメッセージ（byte[]）</param>
+        public void SendAllClientMessage(byte[] str)
+        {
+            foreach (TcpStateClient client in acceptedClients)
+            {
+                client.Socket.Send(str);
+            }
+        }
+
+        //文字列結合系
+        public string MakeSendText(int type, string userName, Boolean authResult)
+        {
+            var strArray = new[] { type.ToString(), userName, authResult.ToString() };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
+        }
+
+        public string MakeSendText(int type, string userName, string message)
+        {
+            var strArray = new[] { type.ToString(), userName, message };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
+        }
     }
+
+       
+    
 }

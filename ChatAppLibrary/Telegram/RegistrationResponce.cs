@@ -5,9 +5,9 @@ using System.Text;
 namespace ChatAppLibrary.Telegram
 {
     /// <summary>
-    /// チャット機能のテレグラム
+    /// 登録機能のテレグラム
     /// </summary>
-    public class ChatTelegram　: ITelegram
+    public class RegistrationResponceTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分
@@ -15,15 +15,15 @@ namespace ChatAppLibrary.Telegram
         private Header header { get; set; } = new Header();
 
         /// <summary>
-        /// 会話内容
+        /// 認証結果
         /// </summary>
-        public string Message { get; set; }
+        public bool AuthResult { get; set; }
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="telegram"></param>
-        public ChatTelegram(byte[] telegram)
+        public RegistrationResponceTelegram(byte[] telegram)
         {
             // 受け取ったbyte配列をstringに戻す
             var strTelegram = System.Text.Encoding.UTF8.GetString(telegram);
@@ -33,12 +33,12 @@ namespace ChatAppLibrary.Telegram
 
             this.header.Type = Convert.ToInt32(telegramArr[0]);
             this.header.UserName = telegramArr[1].ToString();
-            this.Message = telegramArr[2].ToString();
+            this.AuthResult = System.Convert.ToBoolean(telegramArr[2]);
         }
 
         public Header GetHeader()
         {
-            return header; ;
+            return header;
         }
 
         public Body GetBody()
