@@ -12,7 +12,7 @@ namespace ChatAppLibrary.Telegram
         /// <summary>
         /// 各テレグラムの共通部分
         /// </summary>
-        public Header header { get; set; } = new Header();
+        private Header header { get; set; } = new Header();
 
         /// <summary>
         /// 会話内容
