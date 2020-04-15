@@ -22,6 +22,11 @@ namespace ChatAppClient.ViewController
         String host = "localhost";
         int port = 2001;
 
+        /// <summary>
+        /// チャットの処理番号
+        /// </summary>
+        private const int process_type = 3;
+
         public ChatForm()
         {
 
@@ -35,7 +40,7 @@ namespace ChatAppClient.ViewController
 
         private void buttonSendMessage_Click(object sender, EventArgs e)
         {
-
+            this.
             clientService.SendMessage(textBoxSendMessage.Text);
 
         }
@@ -108,6 +113,22 @@ namespace ChatAppClient.ViewController
             //{
             //    richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
             //}
+        }
+
+        /// <summary>
+        /// Sendメソッドに渡すために必要なデータを結合する
+        /// </summary>
+        /// <param name="type">処理種別</param>
+        /// <param name="userName">ユーザー名</param>
+        /// <param name="password">パスワード</param>
+        /// <returns></returns>
+        public string MakeSendText(int type, string userName, string password)
+        {
+            var strArray = new[] { type.ToString(), userName, password };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
         }
     }
 }

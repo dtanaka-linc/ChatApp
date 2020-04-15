@@ -1,5 +1,9 @@
 ﻿using ChatAppClient.Service;
+using ChatAppClient.ViewController;
+using ChatAppLibrary.Telegram;
+using ChatAppLibrary.TelegramService;
 using System;
+using System.Text;
 using System.Windows.Forms;
 
 namespace ChatAppClient
@@ -12,15 +16,43 @@ namespace ChatAppClient
         int port = 2001;
 
         /// <summary>
-        /// 処理種別
+        /// 登録要求の処理種別
         /// </summary>
-        int process_type = 2;
+        private const int process_type = 2;
 
         ClientService service = new ChatAppClient.Service.ClientService();
 
         public RegisterForm()
         {
-            InitializeComponent();  
+            InitializeComponent();
+        }
+
+        /// <summary>
+        /// テレグラム受信イベント
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="telegram">受診したテレグラム</param>
+        private void RegisterForm_MessageReceived(object sender, byte[] recieveTelegram)
+        {
+            // サーバーからの返答が応答のテレグラムになったらコメントアウト外す
+            //var telegram = new RegistrationResponceTelegram(recieveTelegram);
+            //var authResult = telegram.AuthResult;
+
+            // 画面遷移の確認用　サーバーからの返答が応答のテレグラムになったら消す
+            var authResult = true;
+
+            // 認証成功時に画面遷移
+            if (authResult)
+            {
+                MessageBox.Show("登録完了しました", "成功", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                // Chatフォームに遷移する
+                ChatForm chatForm = new ChatForm();
+                chatForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
@@ -41,27 +73,17 @@ namespace ChatAppClient
                 }
                 else
                 {
+                    ClientService service = new ChatAppClient.Service.ClientService();
+                    service.messageReceived += new ClientService.ReceivedEventHandler(RegisterForm_MessageReceived);
+                    
+                    // サーバーに接続する
                     service.Connect(host, port);
 
-                    // 送信可能なようにデータを結合
+                    // 送信するデータを結合
                     var sendTelegram = this.MakeSendText(process_type, userNameTextBox.Text, passTextBox.Text);
 
                     // サーバーに送信
                     service.SendMessage(sendTelegram);
-
-                    // 認証結果がtrueと受け取ったと仮定する
-                    var authResult = true;
-                    // 認証成功時に画面遷移
-                    if (authResult)
-                    {
-                        MessageBox.Show("登録完了しました","成功",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        // Chatフォームに遷移する
-
-                    }
-                    else
-                    {
-                        MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
                     
                 }
             }
