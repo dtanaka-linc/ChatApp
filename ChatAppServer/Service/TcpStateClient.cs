@@ -28,7 +28,7 @@ namespace ChatAppServer.Service
         private Encoding Encoding;
 
         //データを受信した後、全体にメッセージ送信用のデリゲートとイベント
-        public delegate void ReceivedEventHandler(TcpStateClient stateClient,byte[] receivedBytes);
+        public delegate void ReceivedEventHandler(TcpStateClient stateClient, byte[] receivedBytes);
         public event ReceivedEventHandler messageReceived;
 
         public TcpStateClient(Socket soc)
@@ -41,7 +41,7 @@ namespace ChatAppServer.Service
         }
 
         //データ受信スタート
-        public  void StartReceive(Socket soc)
+        public void StartReceive(Socket soc)
         {
             TcpStateClient so = new TcpStateClient(soc);
             //非同期受信を開始
@@ -54,7 +54,7 @@ namespace ChatAppServer.Service
         }
 
         //BeginReceiveのコールバック
-        private  void ReceiveDataCallback(IAsyncResult ar)
+        private void ReceiveDataCallback(IAsyncResult ar)
         {
             //状態オブジェクトの取得
             TcpStateClient so = (TcpStateClient)ar.AsyncState;
@@ -104,7 +104,7 @@ namespace ChatAppServer.Service
                 byte[] receivedBytes = Encoding.UTF8.GetBytes(str);
 
                 //メッセージ受信時の処理
-                messageReceived(this,receivedBytes);
+                messageReceived(this, receivedBytes);
 
             }
 

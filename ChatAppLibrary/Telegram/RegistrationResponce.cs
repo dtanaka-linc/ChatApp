@@ -33,7 +33,7 @@ namespace ChatAppLibrary.Telegram
 
             this.header.Type = Convert.ToInt32(telegramArr[0]);
             this.header.UserName = telegramArr[1].ToString();
-            this.AuthResult = System.Convert.ToBoolean(telegramArr[2]);
+
         }
 
         public Header GetHeader()
@@ -44,6 +44,19 @@ namespace ChatAppLibrary.Telegram
         public Body GetBody()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 送信用のテレグラムを返す処理
+        /// </summary>
+        /// <returns>必要な項目を結合したstring</returns>
+        public string ToTelegramText()
+        {
+            var strArray = new[] { this.GetHeader().Type.ToString(), GetHeader().UserName };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
         }
     }
 }

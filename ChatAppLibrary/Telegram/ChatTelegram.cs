@@ -7,7 +7,7 @@ namespace ChatAppLibrary.Telegram
     /// <summary>
     /// チャット機能のテレグラム
     /// </summary>
-    public class ChatTelegram　: ITelegram
+    public class ChatTelegram : ITelegram
     {
         /// <summary>
         /// 各テレグラムの共通部分
@@ -44,6 +44,19 @@ namespace ChatAppLibrary.Telegram
         public Body GetBody()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 送信用のテレグラムを返す処理
+        /// </summary>
+        /// <returns>必要な項目を結合したstring</returns>
+        public string ToTelegramText()
+        {
+            var strArray = new[] { this.GetHeader().Type.ToString(), GetHeader().UserName, this.Message };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
         }
     }
 }
