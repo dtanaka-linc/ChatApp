@@ -15,21 +15,26 @@ namespace ChatAppServer.Repository
         private ChatAppDbContext DbContext { get; set; }
 
 
-        //コンストラクタ
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public ChatLogRepository(ChatAppDbContext dbContext)
         {
             this.DbContext = dbContext;
         }
 
         /// <summary>
-        /// チャットログを保存する
+        /// ChatLogServiceから渡されたユーザー名と投稿内容をChatLogsに保存する
         /// </summary>
-        /// <param name="body">投稿内容</param>
-        public void CreateChatLog(string body)
+        /// <param name="userName">ユーザー名</param>
+        /// <param name="msg">会話内容</param>
+        public void CreateChatLog(string userName, string msg)
         {
             var chatLog = new ChatLog()
             {
-                Body = body
+                //作業メモ：ユーザー名はuserIdにしないといけない...最初からユーザーIDでもらうべきかここで検索して格納すべきか？
+                Body = msg
             };
             DbContext.ChatLogs.Add(chatLog);
             DbContext.SaveChanges();
