@@ -18,7 +18,7 @@ namespace ChatAppClient
         /// <summary>
         /// 登録要求の処理種別
         /// </summary>
-        private const int process_type = 2;
+        private const int ProcessType = 2;
 
         ClientService service = new ChatAppClient.Service.ClientService();
 
@@ -44,9 +44,12 @@ namespace ChatAppClient
             // 認証成功時に画面遷移
             if (authResult)
             {
+                // 登録完了のメッセージ表示
                 MessageBox.Show("登録完了しました", "成功", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
+                chatForm.loginUser = this.userNameTextBox.Text;
                 chatForm.ShowDialog();
             }
             else
@@ -80,7 +83,7 @@ namespace ChatAppClient
                     service.Connect(host, port);
 
                     // 送信するデータを結合
-                    var sendTelegram = this.MakeSendText(process_type, userNameTextBox.Text, passTextBox.Text);
+                    var sendTelegram = this.MakeSendText(ProcessType, userNameTextBox.Text, passTextBox.Text);
 
                     // サーバーに送信
                     service.SendMessage(sendTelegram);

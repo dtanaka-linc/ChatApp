@@ -18,7 +18,7 @@ namespace ChatAppServer
         /// <summary>
         /// 認証要求の処理番号
         /// </summary>
-        private const int process_type = 1;
+        private const int ProcessType = 1;
 
         public LoginForm()
         {
@@ -48,7 +48,7 @@ namespace ChatAppServer
             {
                 service.Connect(host, port);
                 // 送信するデータの作成（string）
-                var sendText = this.MakeSendText(process_type, this.NameTextBox.Text, this.PasswordTextBox.Text);
+                var sendText = this.MakeSendText(ProcessType, this.NameTextBox.Text, this.PasswordTextBox.Text);
 
                 // サーバーにデータを送信
                 service.SendMessage(sendText);
@@ -76,6 +76,7 @@ namespace ChatAppServer
             {
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
+                chatForm.loginUser = this.NameTextBox.Text;
                 chatForm.Show();
             }
             else

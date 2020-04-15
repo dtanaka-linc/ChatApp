@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using ChatAppClient.Service;
 using System.Threading;
+using ChatAppLibrary.Telegram;
+using ChatAppLibrary.TelegramService;
 
 namespace ChatAppClient.ViewController
 {
@@ -23,9 +25,16 @@ namespace ChatAppClient.ViewController
         int port = 2001;
 
         /// <summary>
+        /// 処理種別
+        /// </summary>
+        private const int process_number = 3;
+
+        public string loginUser { get; set; }
+
+        /// <summary>
         /// チャットの処理番号
         /// </summary>
-        private const int process_type = 3;
+        private const int ProcessType = 3;
 
         public ChatForm()
         {
@@ -38,22 +47,30 @@ namespace ChatAppClient.ViewController
             clientService.messageReceived += new ClientService.ReceivedEventHandler(ChatForm_MessageReceived); 
         }
 
+        /// <summary>
+        /// 送信ボタンクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonSendMessage_Click(object sender, EventArgs e)
         {
-            this.
-            clientService.SendMessage(textBoxSendMessage.Text);
+            // サーバー送信用のテキストに結合
+            var sendText = this.MakeSendText(process_number, this.loginUser, textBoxSendMessage.Text);
+            
+            // サーバーに送信
+            this.clientService.SendMessage(sendText);
 
         }
 
-        private void richTextBoxLog_TextChanged(object sender, EventArgs e)
-        {
+        //private void richTextBoxLog_TextChanged(object sender, EventArgs e)
+        //{
 
-        }
+        //}
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
+        //private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
 
-        }
+        //}
 
 
         //ストリップ項目：サーバーに接続
@@ -96,23 +113,13 @@ namespace ChatAppClient.ViewController
         }
 
         //データ受信時にイベント発火！　チャット画面を更新する
-        private void ChatForm_MessageReceived(object sender,byte[] telegram)
+        private void ChatForm_MessageReceived(object sender,byte[] recieveTelegram)
         {
-            //if (this.IsDisposed)
-            //{
-            //    return;
-            //}
-            //if (this.InvokeRequired)
-            //{
-            //    this.Invoke((MethodInvoker)delegate
-            //    {
-            //        ChatForm_MessageReceived(sender, text);
-            //    });
-            //}
-            //else
-            //{
-            //    richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
-            //}
+            var telegram = new ChatTelegram(recieveTelegram);
+
+            // テキストの更新  
+            //　暫定　ユーザー名:メッセージ
+            richTextBoxLog.Text = telegram.GetHeader().UserName + ":" +telegram.Message + "\r\n" + richTextBoxLog.Text;
         }
 
         /// <summary>
@@ -122,9 +129,9 @@ namespace ChatAppClient.ViewController
         /// <param name="userName">ユーザー名</param>
         /// <param name="password">パスワード</param>
         /// <returns></returns>
-        public string MakeSendText(int type, string userName, string password)
+        public string MakeSendText(int type, string userName, string message)
         {
-            var strArray = new[] { type.ToString(), userName, password };
+            var strArray = new[] { type.ToString(), userName, message };
 
             var sendtext = string.Join(", ", strArray);
 
