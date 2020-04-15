@@ -15,8 +15,7 @@ namespace ChatAppServer.Service
     public class UserService
     {
         //
-        private ChatAppDbContext DbContext { get; set; }
-        public UserRepository userRepository { get; set; }
+        public UserRepository UserRepository { get; set; }
 
 
         /// <summary>
@@ -25,10 +24,9 @@ namespace ChatAppServer.Service
         /// <param name="DbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserService(ChatAppDbContext DbContext)
         {
-            /*クラスごとにDbContextをnewすると変更履歴が失われてしまうので○○Telegramクラスからコールされるときに受けとって設定する*/
-            this.DbContext = DbContext;
             /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
-            this.userRepository = new UserRepository(this.DbContext);
+            /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
+            this.UserRepository = new UserRepository(DbContext);
         }
 
 
@@ -43,9 +41,9 @@ namespace ChatAppServer.Service
             var PassWord = registrationData.PassWord;
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
-            if (userRepository.ExistsUserName(userName))
+            if (UserRepository.ExistsUserName(userName))
             {
-                return userRepository.CreateUser(userName, PassWord);
+                return UserRepository.CreateUser(userName, PassWord);
             }
             else
             {
@@ -66,7 +64,7 @@ namespace ChatAppServer.Service
             var password = authRequestData.PassWord;
 
             //UserRepositoryのAuthメソッドの結果を格納する変数　代入しなくていいかな？？
-            var authResult = userRepository.Auth(userName, password);
+            var authResult = UserRepository.Auth(userName, password);
 
             //Authメソッドで該当するレコードがあればtrue、なければfalseを返す
             if (authResult != null)
