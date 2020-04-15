@@ -15,7 +15,14 @@ namespace ChatAppServer.Service
 
     class TcpStateClient
     {
-        public Socket Socket;
+        private Socket socket;
+
+        public Socket Socket
+        {
+            set { this.socket = value; }
+            get { return this.socket; }
+        }
+
         private byte[] ReceiveBuffer;
         private MemoryStream ReceivedData;
         private Encoding Encoding;
