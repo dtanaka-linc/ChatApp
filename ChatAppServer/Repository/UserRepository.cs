@@ -7,14 +7,17 @@ using ChatAppServer.Models;
 namespace ChatAppServer.Repository
 {
     /// <summary>
-    /// Userモデルに+アクセスし新規登録や認証を行うメソッド群
+    /// Userモデルに+アクセスし新規登録や認証を行うメソッド群をもつクラス
     /// </summary>
     public class UserRepository
     {
 
         private ChatAppDbContext DbContext { get; set; }
 
-        //コンストラクタ
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserRepository(ChatAppDbContext dbContext)
         {
             this.DbContext = dbContext;
@@ -22,11 +25,11 @@ namespace ChatAppServer.Repository
 
 
         /// <summary>
-        /// 名前とパスワードをUsersに追加し、Userクラス型のデータとして返す
+        /// 名前とパスワードをUsersテーブルに追加し、Userモデルクラスのデータとして返す
         /// </summary>
-        /// <param name="userName">ログインフォームで入力されたユーザー名</param>
-        /// <param name="password">ログインフォームで入力されたパスワード</param>
-        /// <returns>Userクラス型のデータ</returns>
+        /// <param name="userName">UserServiceクラスのRegisterから渡されたユーザー名</param>
+        /// <param name="password">UserServiceクラスのRegisterから渡されたパスワード</param>
+        /// <returns>Userモデル型のデータ</returns>
         public User CreateUser(string userName, string password)
         {
             var user = new User()
@@ -39,25 +42,22 @@ namespace ChatAppServer.Repository
             return user;
         }
 
-        // UserServiceのAuthメソッドから検索させるために新しくメソッドを追加しました
         /// <summary>
-        ///UserServiceのResisterメソッドから渡されたユーザー名・パスワードの組み合わせが存在するかどうかを確認する
+        ///UserServiceのAuthメソッドから渡されたユーザー名・パスワードのレコードがUsersテーブルに存在するかどうかを確認する
         /// </summary>
-        ///<param name="userName">ユーザー名</param>
-        ///<param name="password">パスワード</param>
-        /// <returns></returns>
-        public bool Auth(string userName, string password)
+        ///<param name="userName">UserServiceのAuthメソッドから渡されたユーザー名</param>
+        ///<param name="password">UserServiceのAuthメソッドから渡されたパスワード</param>
+        /// <returns>Usersテーブルの該当するレコードの内容</returns>
+        public IQueryable<User> Auth(string userName, string password)
         {
-            //二つのカラムのが条件にあっているかを確認するための記述がわからない...
-            return this.DbContext.Users.All(r => r.Name == userName).Where(r => r.Password == password);
+            return this.DbContext.Users.Where(r => r.Name == userName).Where(r => r.Password == password);
         }
 
 
         /// <summary>
-        /// UserServiceのResisterメソッドから渡されたユーザー名と同名のレコードが存在するかどうかを確認する
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns>入力されたユーザー名の同名のレコードの有無</returns>
+        /// UserServiceのResisterメソッドから渡された新規ユーザー名が既存のNameカラムのレコードと重複しているかを確認する/// </summary>
+        /// <param name="userName">UserServiceのResisterメソッドから渡された新規ユーザー名</param>
+        /// <returns>重複している場合true, していなければfalse</returns>
         public bool ExistsUserName(string userName)
         {
             return this.DbContext.Users.Any(r => r.Name == userName);

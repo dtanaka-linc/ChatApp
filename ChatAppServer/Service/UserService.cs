@@ -9,6 +9,9 @@ using ChatAppServer.Repository;
 
 namespace ChatAppServer.Service
 {
+    /// <summary>
+    /// UserRepositoryに定義しているビジネスロジックに受け渡すためのメソッド群を定義しているクラス
+    /// </summary>
     public class UserService
     {
         //UserRepostirotyのインスタンスに渡すChatAppDbContextの宣言はこれでよいでしょうか？
@@ -25,7 +28,7 @@ namespace ChatAppServer.Service
             var PassWord = registrationData.PassWord;
             UserRepository userRepository = new UserRepository(_context);　//コンストラクタとしてChatAppDbContextを設定していますがどのように渡せばよいかがわかりません...
 
-            //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデル型のデータまたはnullを返す
+            //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (userRepository.ExistsUserName(userName)){
                 return userRepository.CreateUser(userName, PassWord);
             }
