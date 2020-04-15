@@ -17,14 +17,25 @@ namespace ChatAppServer.Service
         //UserRepostirotyのインスタンスに渡すChatAppDbContextの宣言はこれでよいでしょうか？
         private ChatAppDbContext _context = new ChatAppDbContext();
 
+        private ChatAppDbContext DbContext { get; set; }
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        public UserService(ChatAppDbContext DbContext)
+        {
+            this.DbContext = DbContext;
+        }
+
+
         /// <summary>
         /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、ユーザー名の重複がなければUserRepositoryのCreateUserメソッドへデータを受け渡す
         /// </summary>
         /// <param name="registrationData">RegistrationTelegramで文字列に戻されたユーザー名やパスワード</param>
-        /// <returns>新しいUserモデル型のデータまたはnull</returns>
+        /// <returns>新しいUserモデルクラスのデータまたはnull</returns>
         public User Register(RegistrationTelegram registrationData)
         {
-            var userName = registrationData.header.UserName;
+            var userName = registrationData.GetHeader().UserName;
             var PassWord = registrationData.PassWord;
             UserRepository userRepository = new UserRepository(_context);　//コンストラクタとしてChatAppDbContextを設定していますがどのように渡せばよいかがわかりません...
 
@@ -43,12 +54,13 @@ namespace ChatAppServer.Service
         /// RegistrationTelegramで文字列に戻されたユーザー名やパスワードを受けとってUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
         /// </summary>
         /// <param name="authRequestData">AuthTelegramのインスタンス</param>
+        /// <returns>Usersテーブルに該当レコードの有があればtrue、なければfalse</returns>
         public bool Auth(AuthRequestTelegram authRequestData)
         {
             UserRepository userRepository = new UserRepository(_context);
 
             //名前が長いのでAuthTeregramの各プロパティの情報を変数に格納する
-            var userName = authRequestData.header.UserName;
+            var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
             //UserRepositoryのAuthメソッドの結果を格納する変数

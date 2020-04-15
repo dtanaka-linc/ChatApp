@@ -15,7 +15,7 @@ namespace ChatAppServer.Repository
         private ChatAppDbContext DbContext { get; set; }
 
         /// <summary>
-        /// コンストラクタ
+        /// コンストラクタ。クラスごとにDbContextをnewすると変更履歴が失われてしまうのでUserServiceからコールするときにうけ受け渡すようにしている
         /// </summary>
         /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserRepository(ChatAppDbContext dbContext)
