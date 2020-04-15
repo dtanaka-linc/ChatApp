@@ -14,17 +14,21 @@ namespace ChatAppServer.Service
     /// </summary>
     public class UserService
     {
-        //UserRepostirotyのインスタンスに渡すChatAppDbContextの宣言はこれでよいでしょうか？
-        private ChatAppDbContext _context = new ChatAppDbContext();
-
+        //
         private ChatAppDbContext DbContext { get; set; }
+        public UserRepository userRepository { get; set; }
+
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
+        /// <param name="DbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserService(ChatAppDbContext DbContext)
         {
+            /*クラスごとにDbContextをnewすると変更履歴が失われてしまうので○○Telegramクラスからコールされるときに受けとって設定する*/
             this.DbContext = DbContext;
+            /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
+            this.userRepository = new UserRepository(this.DbContext);
         }
 
 
@@ -37,10 +41,10 @@ namespace ChatAppServer.Service
         {
             var userName = registrationData.GetHeader().UserName;
             var PassWord = registrationData.PassWord;
-            UserRepository userRepository = new UserRepository(_context);　//コンストラクタとしてChatAppDbContextを設定していますがどのように渡せばよいかがわかりません...
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
-            if (userRepository.ExistsUserName(userName)){
+            if (userRepository.ExistsUserName(userName))
+            {
                 return userRepository.CreateUser(userName, PassWord);
             }
             else
@@ -51,19 +55,17 @@ namespace ChatAppServer.Service
 
 
         /// <summary>
-        /// RegistrationTelegramで文字列に戻されたユーザー名やパスワードを受けとってUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
+        /// RegistrationTelegramで文字列に戻されたユーザー名やパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
         /// </summary>
         /// <param name="authRequestData">AuthTelegramのインスタンス</param>
         /// <returns>Usersテーブルに該当レコードの有があればtrue、なければfalse</returns>
         public bool Auth(AuthRequestTelegram authRequestData)
         {
-            UserRepository userRepository = new UserRepository(_context);
-
             //名前が長いのでAuthTeregramの各プロパティの情報を変数に格納する
             var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
-            //UserRepositoryのAuthメソッドの結果を格納する変数
+            //UserRepositoryのAuthメソッドの結果を格納する変数　代入しなくていいかな？？
             var authResult = userRepository.Auth(userName, password);
 
             //Authメソッドで該当するレコードがあればtrue、なければfalseを返す

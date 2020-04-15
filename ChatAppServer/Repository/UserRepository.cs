@@ -7,19 +7,21 @@ using ChatAppServer.Models;
 namespace ChatAppServer.Repository
 {
     /// <summary>
-    /// Userモデルに+アクセスし新規登録や認証を行うメソッド群をもつクラス
+    /// Userモデルにアクセスし新規登録や認証を行うメソッド群をもつクラス
     /// </summary>
     public class UserRepository
     {
 
         private ChatAppDbContext DbContext { get; set; }
 
+
         /// <summary>
-        /// コンストラクタ。クラスごとにDbContextをnewすると変更履歴が失われてしまうのでUserServiceからコールするときにうけ受け渡すようにしている
+        /// コンストラクタ
         /// </summary>
         /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserRepository(ChatAppDbContext dbContext)
         {
+            /*クラスごとにDbContextをnewすると変更履歴が失われてしまうのでUserServiceからコールされるときに受けとって設定している*/
             this.DbContext = dbContext;
         }
 
