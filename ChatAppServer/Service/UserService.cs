@@ -71,9 +71,7 @@ namespace ChatAppServer.Service
             {
                 return true;
             }
-            else
-            {
-                return false;
+            return false;
             }
         }
     }
