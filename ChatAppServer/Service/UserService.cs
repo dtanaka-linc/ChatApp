@@ -40,16 +40,29 @@ namespace ChatAppServer.Service
 
 
         /// <summary>
-        /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、データの照会結果をboolで返す
+        /// RegistrationTelegramで文字列に戻されたユーザー名やパスワードを受けとってUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
         /// </summary>
-        /// <param name="authRequestData"></param>
-        public void Auth(AuthRequestTelegram authRequestData)
+        /// <param name="authRequestData">AuthTelegramのインスタンス</param>
+        public bool Auth(AuthRequestTelegram authRequestData)
         {
             UserRepository userRepository = new UserRepository(_context);
 
+            //名前が長いのでAuthTeregramの各プロパティの情報を変数に格納する
             var userName = authRequestData.header.UserName;
             var password = authRequestData.PassWord;
-            userRepository.Auth(userName, password);
+
+            //UserRepositoryのAuthメソッドの結果を格納する変数
+            var authResult = userRepository.Auth(userName, password);
+
+            //Authメソッドで該当するレコードがあればtrue、なければfalseを返す
+            if (authResult != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
