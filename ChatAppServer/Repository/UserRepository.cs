@@ -53,7 +53,9 @@ namespace ChatAppServer.Repository
         public bool Auth(string userName, string password)
         {
             //ユーザー名が一致したレコードに対してパスワードが存在するかを調べる
-            return this.DbContext.Users.Where(r => r.Name == userName).Any(r => r.Password == password);
+            return this.DbContext.Users
+                .Where(r => r.Name == userName)
+                .Any(r => r.Password == password);
         }
 
 
@@ -63,7 +65,8 @@ namespace ChatAppServer.Repository
         /// <returns>重複している場合true, していなければfalse</returns>
         public bool ExistsUserName(string userName)
         {
-            return this.DbContext.Users.Any(r => r.Name == userName);
+            return this.DbContext.Users
+                .Any(r => r.Name == userName);
         }
 
     }
