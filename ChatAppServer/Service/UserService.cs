@@ -18,17 +18,20 @@ namespace ChatAppServer.Service
         /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、ユーザー名の重複がなければUserRepositoryのCreateUserメソッドへデータを受け渡す
         /// </summary>
         /// <param name="registrationData">RegistrationTelegramで文字列に戻されたユーザー名やパスワード</param>
-        /// <returns></returns>
-        //CreateUserでSaveChangesのあとに新しく追加したUser型のデータが返ってくると思ったのですが、「値を返さないコードパスがあります」となってしまいます。
+        /// <returns>新しいUserモデル型のデータまたはnull</returns>
         public User Register(RegistrationTelegram registrationData)
         {
             var userName = registrationData.header.UserName;
             var PassWord = registrationData.PassWord;
             UserRepository userRepository = new UserRepository(_context);　//コンストラクタとしてChatAppDbContextを設定していますがどのように渡せばよいかがわかりません...
 
-            //ユーザー名の重複がなければCreateUserにデータを渡し新規追加したUsersのデータを返す(なんか違和感がある...)
+            //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデル型のデータまたはnullを返す
             if (userRepository.ExistsUserName(userName)){
                 return userRepository.CreateUser(userName, PassWord);
+            }
+            else
+            {
+                return null;
             }
         }
 
