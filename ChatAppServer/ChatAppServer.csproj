@@ -75,7 +75,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\202004130226190_AddColumnToChatLogs.cs" />
+    <Compile Include="Migrations\202004130226190_AddColumnToChatLogs.designer.cs">
+      <DependentUpon>202004130226190_AddColumnToChatLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs" />
+    <Compile Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.designer.cs">
+      <DependentUpon>202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Repository\ChatLogRepository.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,15 +114,21 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\UserRepository.cs" />
-    <Compile Include="Service\UserService.cs" />
     <EmbeddedResource Include="Migrations\202004021230279_CreateUser.resx">
       <DependentUpon>202004021230279_CreateUser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004070917538_AddIndexToUsers.resx">
       <DependentUpon>202004070917538_AddIndexToUsers.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="Service\ChatLogService.cs" />
     <Compile Include="Service\TcpStateClient.cs" />
     <Compile Include="Service\TcpService.cs" />
+    <EmbeddedResource Include="Migrations\202004130226190_AddColumnToChatLogs.resx">
+      <DependentUpon>202004130226190_AddColumnToChatLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004130611272_AddNavigationsBetweenUsersAndChatLogs.resx">
+      <DependentUpon>202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ServerForm.resx">
       <DependentUpon>ServerForm.cs</DependentUpon>
     </EmbeddedResource>

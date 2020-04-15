@@ -9,6 +9,10 @@ using ChatAppServer.Repository;
 
 namespace ChatAppServer.Service
 {
+
+    //メモ：パスワードをハッシュ化する処理を追加予定
+
+
     /// <summary>
     /// UserRepositoryに定義しているビジネスロジックに受け渡すためのメソッド群を定義しているクラス
     /// </summary>
