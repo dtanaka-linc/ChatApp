@@ -103,6 +103,7 @@
             this.MainMenuStrip = this.menuStripConnect;
             this.Name = "ChatForm";
             this.Text = "ChatForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ChatForm_FormClosed);
             this.Load += new System.EventHandler(this.ChatForm_Load);
             this.menuStripConnect.ResumeLayout(false);
             this.menuStripConnect.PerformLayout();

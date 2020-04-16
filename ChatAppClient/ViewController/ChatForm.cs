@@ -63,6 +63,7 @@ namespace ChatAppClient.ViewController
             // サーバーに送信
             this.clientService.SendMessage(sendText);
 
+            textBoxSendMessage.Clear();
         }
 
         /// <summary>
@@ -72,7 +73,6 @@ namespace ChatAppClient.ViewController
         /// <param name="e"></param>
         private void toolStripMenuItemServerConnect_Click(object sender, EventArgs e)
         {
-
             clientService.Connect(host, port);
 
             //メッセージ送信を操作可能にする
@@ -167,6 +167,16 @@ namespace ChatAppClient.ViewController
                     richTextBoxLog.Text += message;
                 }     
             }
+        }
+
+        /// <summary>
+        /// チャットフォームクローズでアプリケーション終了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChatForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

@@ -44,6 +44,8 @@ namespace ChatAppClient
             // 認証成功時に画面遷移
             if (authResult)
             {
+                Invoke(new FormHideDelegate(FormHide));
+
                 // 登録完了のメッセージ表示
                 MessageBox.Show("登録完了しました", "成功", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 
@@ -123,6 +125,16 @@ namespace ChatAppClient
             var sendtext = string.Join(", ", strArray);
 
             return sendtext;
+        }
+
+        /// <summary>
+        /// LoginForm_MessageReceived内でフォームの状態を変更するのに使用するデリゲート
+        /// </summary>
+        delegate void FormHideDelegate();
+
+        private void FormHide()
+        {
+            this.Close();
         }
     }
 }
