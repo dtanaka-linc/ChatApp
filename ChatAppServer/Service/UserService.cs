@@ -68,6 +68,14 @@ namespace ChatAppServer.Service
             var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
+
+            //新しく追加したい処理
+            //userNameでUserRepository.FindByUserName()する
+            //DBから取得したパスワード+ ↑のpasswordをPasswordService.verifypassword()に送信
+            //return PasswordService.verifypassword()の結果(bool)を返す
+
+
+            //＝＝＝＝元のAuth
             //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とハッシュ化済みのパスワードの組み合わせのデータがあればtrue、なければfalse)
             return UserRepository.Auth(userName, password);
         }
