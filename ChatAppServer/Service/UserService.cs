@@ -18,19 +18,20 @@ namespace ChatAppServer.Service
     /// </summary>
     public class UserService
     {
-        //
+        //プロパティ
+        /*UserRepositoryインスタンスはこのクラスの複数のメソッドで使うのでコンストラクタで生成されたらプロパティに格納している*/
         public UserRepository UserRepository { get; set; }
 
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="DbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
-        public UserService(ChatAppDbContext DbContext)
+        /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
+        public UserService(ChatAppDbContext dbContext)
         {
             /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
             /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
-            this.UserRepository = new UserRepository(DbContext);
+            this.UserRepository = new UserRepository(dbContext);
         }
 
 
@@ -41,19 +42,18 @@ namespace ChatAppServer.Service
         /// <returns>新しいUserモデルクラスのデータまたはnull</returns>
         public User Register(RegistrationTelegram registrationData)
         {
+            //名前が長いので一度変数に格納します
             var userName = registrationData.GetHeader().UserName;
-            var PassWord = registrationData.PassWord;
+            var password = registrationData.PassWord;
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
             {
-                return UserRepository.CreateUser(userName, PassWord);
+                return UserRepository.CreateUser(userName, password);
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
+    
 
 
         /// <summary>
