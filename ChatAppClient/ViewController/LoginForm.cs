@@ -77,7 +77,7 @@ namespace ChatAppServer
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
                 chatForm.loginUser = this.NameTextBox.Text;
-                chatForm.Show();
+                chatForm.ShowDialog();
             }
             else
             {

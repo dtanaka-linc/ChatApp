@@ -56,7 +56,9 @@ namespace ChatAppClient.ViewController
         {
             // サーバー送信用のテキストに結合
             var sendText = this.MakeSendText(process_number, this.loginUser, textBoxSendMessage.Text);
-            
+
+            richTextBoxLog.Text = this.loginUser + textBoxSendMessage.Text;
+
             // サーバーに送信
             this.clientService.SendMessage(sendText);
 
@@ -86,11 +88,9 @@ namespace ChatAppClient.ViewController
         private void ChatForm_Load(object sender, EventArgs e)
         {
             //コメントアウトを外すとフォームを開いたときにサーバーに接続を行います
-/*
+
             //マルチスタートアッププロジェクトでサーバーと同時起動時の動作確認用
             Thread.Sleep(1000);
-
-            Console.WriteLine("load時の自動接続処理完了");
 
             try
             {
@@ -104,7 +104,7 @@ namespace ChatAppClient.ViewController
                 //ちゃんとした例外処理にあとで修正
                 Console.WriteLine("起動時接続に失敗したので手動で接続してください！");
             }
-*/
+
         }
 
         private void textBoxSendMessage_TextChanged(object sender, EventArgs e)
