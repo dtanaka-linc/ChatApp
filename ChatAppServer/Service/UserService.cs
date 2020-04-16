@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+//作業メモ：もしハッシュ化をこのクラスで行わないなら削除
+using System.Security.Cryptography;
 using ChatAppServer.Models;
 using ChatAppLibrary.Telegram;
 using ChatAppServer.Repository;
@@ -10,7 +12,7 @@ using ChatAppServer.Repository;
 namespace ChatAppServer.Service
 {
 
-    //メモ：パスワードをハッシュ化する処理を追加予定
+    //作業メモ：パスワードをハッシュ化する処理を○○Telegramクラス側で行うかどうか相談中
 
 
     /// <summary>
@@ -21,6 +23,8 @@ namespace ChatAppServer.Service
         //プロパティ
         /*UserRepositoryインスタンスはこのクラスの複数のメソッドで使うのでコンストラクタで生成されたらプロパティに格納している*/
         public UserRepository UserRepository { get; set; }
+        //作業メモ：もしハッシュ化をこのクラスで行わないなら削除
+        public SHA256 Sha { get; set; }
 
 
         /// <summary>
@@ -32,6 +36,8 @@ namespace ChatAppServer.Service
             /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
             /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
             this.UserRepository = new UserRepository(dbContext);
+            //作業メモ：もしハッシュ化をこのクラスで行わないなら削除
+            this.Sha = new SHA256CryptoServiceProvider();
         }
 
 
@@ -43,6 +49,7 @@ namespace ChatAppServer.Service
         public User Register(RegistrationTelegram registrationData)
         {
             //名前が長いので一度変数に格納します
+            //作業メモ：ハッシュ化されたパスワードを受け取る場合はプロパティ名変えるかも
             var userName = registrationData.GetHeader().UserName;
             var password = registrationData.PassWord;
 
