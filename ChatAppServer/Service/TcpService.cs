@@ -9,6 +9,7 @@ using System.Collections;
 using System.Threading;
 using ChatAppLibrary.Telegram;
 using ChatAppServer.Repository;
+using ChatAppServer.Models;
 
 namespace ChatAppServer.Service
 {
@@ -36,6 +37,9 @@ namespace ChatAppServer.Service
 
         public UserRepository userRepository;
 
+        private ChatAppDbContext dbcon;
+        private UserService userService;
+
         //コンストラクタ
         public TcpService()
         {
@@ -45,6 +49,9 @@ namespace ChatAppServer.Service
             encoding = Encoding.UTF8;
             //接続中のクライアントのコレクション
             acceptedClients = new ArrayList();
+
+
+            userService = new UserService(dbcon);
 
         }
 
@@ -148,13 +155,14 @@ namespace ChatAppServer.Service
             AuthResponseTelegram sendIt = new AuthResponseTelegram(telegram);
 
             //UserService.Auth：DBと接続して認証
+            sendIt.AuthResult = userService.Auth(receiveIt);
 
             //確認用の仮の値(UserServiceを使うときに削除)
-            sendIt.AuthResult = true;
+            //sendIt.AuthResult = true;
 
 
             //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
-            String str = sendIt.ToTelegramText();
+            string str = sendIt.ToTelegramText();
 
             SendClientMessage(stateClient, str);
 
@@ -169,9 +177,12 @@ namespace ChatAppServer.Service
             RegistrationResponceTelegram sendIt = new RegistrationResponceTelegram(telegram);
 
             //UserService.Register：DBと接続して新規登録
+            User authUser = userService.Register(receiveIt);
+            //テレグラム側でUserクラスを使いたいが循環参照になってしまうのでいったんここで処理
+            sendIt.GetHeader().UserName = authUser.Name;
 
             //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
-            String str = sendIt.ToTelegramText();
+            string str = sendIt.ToTelegramText();
 
             SendClientMessage(stateClient, str);
         }
@@ -186,7 +197,7 @@ namespace ChatAppServer.Service
             Console.WriteLine(receiveIt.GetHeader().UserName.ToString());
 
             //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.Message);
-            String str = receiveIt.ToTelegramText();
+            string str = receiveIt.ToTelegramText();
 
             SendAllClientMessage(str);
 
