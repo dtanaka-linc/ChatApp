@@ -63,7 +63,6 @@
             this.richTextBoxLog.Size = new System.Drawing.Size(724, 294);
             this.richTextBoxLog.TabIndex = 2;
             this.richTextBoxLog.Text = "";
-            this.richTextBoxLog.TextChanged += new System.EventHandler(this.richTextBoxLog_TextChanged);
             // 
             // menuStripConnect
             // 
@@ -84,7 +83,7 @@
             this.toolStripMenuItemConnect.Name = "toolStripMenuItemConnect";
             this.toolStripMenuItemConnect.Size = new System.Drawing.Size(64, 29);
             this.toolStripMenuItemConnect.Text = "接続";
-            this.toolStripMenuItemConnect.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+
             // 
             // toolStripMenuItemServerConnect
             // 

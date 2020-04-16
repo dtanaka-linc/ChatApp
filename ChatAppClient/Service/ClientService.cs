@@ -114,11 +114,13 @@ namespace ChatAppClient.Service
                 string str = Encoding.UTF8.GetString(
                     ReceivedData.ToArray());
 
+                var telegram = ReceivedData.ToArray();
+
                 //受信した文字列をコンソールに表示
                 System.Console.WriteLine("ClientService:サーバーから送信されたメッセージ：" + str);
 
                 //メッセージ受信時の処理
-                //messageReceived(this,str);
+                messageReceived(this, telegram);
 
 
                 ReceivedData.Close();
