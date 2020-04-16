@@ -38,13 +38,14 @@ namespace ChatAppServer.Repository
         public void CreateChatLog(string userName, string msg)
         {
             //UserIdカラムにユーザーIDの情報を格納するために、ユーザー名から検索してUsersテーブルのIDを取得する
-            //ユーザー名が合致したUsersのレコードを取得する
+            //ユーザー名が合致したUsersのレコードを取得してuserに格納する
             IQueryable<User> user = UserRepository.FindByUserName(userName);
-            //userのIdプロパティを格納する
+            //userのIdプロパティをuserIdに格納する
+            userId = DbContext.user.Id;
 
             var chatLog = new ChatLog()
             {
-                //各プロパティ(カラム)に該当する情報を格納する
+                //ChatLogクラスの各プロパティに該当する情報を格納する
                 UserId = userId,
                 Body = msg
             };

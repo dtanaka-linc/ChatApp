@@ -44,8 +44,8 @@ namespace ChatAppServer.Service
                 //名前が長いのでChatTeregramの各プロパティの情報を変数に格納する
                 var userName = registrationData.GetHeader().UserName;
                 var msg = registrationData.Message;
-
-                /*作業メモ：CreateChatLogを呼び出す処理を書く。ユーザー名とIDの変換はCreateChatLog側でFindByUserName()でやる*/
+                
+                //ビジネスロジック分離のためCreateChatLogにデータを渡す
                 ChatLogRepository.CreateChatLog(userName, msg);
             }
         }
