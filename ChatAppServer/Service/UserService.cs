@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//作業メモ：もしハッシュ化をこのクラスで行わないなら削除
-using System.Security.Cryptography;
 using ChatAppServer.Models;
 using ChatAppLibrary.Telegram;
 using ChatAppServer.Repository;
@@ -12,7 +10,7 @@ using ChatAppServer.Repository;
 namespace ChatAppServer.Service
 {
 
-    //作業メモ：パスワードをハッシュ化する処理を○○Telegramクラス側で行うかどうか相談中
+    //作業メモ：パスワードをハッシュ化する処理は○○Telegramクラス側で行う
 
 
     /// <summary>
@@ -23,8 +21,6 @@ namespace ChatAppServer.Service
         //プロパティ
         /*UserRepositoryインスタンスはこのクラスの複数のメソッドで使うのでコンストラクタで生成されたらプロパティに格納している*/
         public UserRepository UserRepository { get; set; }
-        //作業メモ：もしハッシュ化をこのクラスで行わないなら削除
-        public SHA256 Sha { get; set; }
 
 
         /// <summary>
@@ -36,13 +32,11 @@ namespace ChatAppServer.Service
             /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
             /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
             this.UserRepository = new UserRepository(dbContext);
-            //作業メモ：もしハッシュ化をこのクラスで行わないなら削除
-            this.Sha = new SHA256CryptoServiceProvider();
         }
 
 
         /// <summary>
-        /// RegistrationTelegramから文字列に戻されたユーザー名やパスワードを受け取り、ユーザー名の重複がなければUserRepositoryのCreateUserメソッドへデータを受け渡す
+        /// RegistrationTelegramから文字列に戻されたユーザー名やハッシュ化済みのパスワードを受け取り、ユーザー名の重複がなければUserRepositoryのCreateUserメソッドへデータを受け渡す
         /// </summary>
         /// <param name="registrationData">RegistrationTelegramで文字列に戻されたユーザー名やパスワード</param>
         /// <returns>新しいUserモデルクラスのデータまたはnull</returns>
@@ -64,7 +58,7 @@ namespace ChatAppServer.Service
 
 
         /// <summary>
-        /// RegistrationTelegramで文字列に戻されたユーザー名やパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
+        /// RegistrationTelegramで文字列に戻されたユーザー名やハッシュ化済みのパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
         /// </summary>
         /// <param name="authRequestData">AuthTelegramのインスタンス</param>
         /// <returns>Usersテーブルに該当レコードの有があればtrue、なければfalse</returns>
@@ -74,7 +68,7 @@ namespace ChatAppServer.Service
             var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
-            //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とパスワードの組み合わせのデータがあればtrue、なければfalse)
+            //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とハッシュ化済みのパスワードの組み合わせのデータがあればtrue、なければfalse)
             return UserRepository.Auth(userName, password);
         }
     }
