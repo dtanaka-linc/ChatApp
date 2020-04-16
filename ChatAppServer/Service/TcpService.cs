@@ -150,7 +150,7 @@ namespace ChatAppServer.Service
             //UserService.Auth：DBと接続して認証
 
             //確認用の仮の値(UserServiceを使うときに削除)
-            sendIt.authResult = true;
+            sendIt.AuthResult = true;
 
 
             //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);

@@ -52,7 +52,7 @@ namespace ChatAppLibrary.Telegram
         /// <returns>必要な項目を結合したstring</returns>
         public string ToTelegramText()
         {
-            var strArray = new[] { this.GetHeader().Type.ToString(), GetHeader().UserName, this.Message };
+            var strArray = new[] { GetHeader().Type.ToString(), GetHeader().UserName, Message };
 
             var sendtext = string.Join(", ", strArray);
 

@@ -45,5 +45,19 @@ namespace ChatAppLibrary.Telegram
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 送信用のテレグラムを返す処理
+        /// </summary>
+        /// <returns>必要な項目を結合したstring</returns>
+        public string ToTelegramText()
+        {
+            var strArray = new[] { GetHeader().Type.ToString(), GetHeader().UserName, PassWord };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
+        }
+
     }
 }
