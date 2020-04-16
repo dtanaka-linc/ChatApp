@@ -84,6 +84,7 @@
       <DependentUpon>202004130611272_AddNavigationsBetweenUsersAndChatLogs.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Repository\ChatLogRepository.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +120,7 @@
     <EmbeddedResource Include="Migrations\202004070917538_AddIndexToUsers.resx">
       <DependentUpon>202004070917538_AddIndexToUsers.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="Service\ChatLogService.cs" />
     <Compile Include="Service\TcpStateClient.cs" />
     <Compile Include="Service\TcpService.cs" />
     <EmbeddedResource Include="Migrations\202004130226190_AddColumnToChatLogs.resx">
