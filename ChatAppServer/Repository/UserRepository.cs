@@ -11,12 +11,14 @@ namespace ChatAppServer.Repository
     /// </summary>
     public class UserRepository
     {
-
+        //プロパティ
         private ChatAppDbContext DbContext { get; set; }
 
         //コンストラクタ
         public UserRepository(ChatAppDbContext dbContext)
         {
+            /*DbContextクラスは複数回newすると変更履歴が消えてしまうため、UserServiceからChatAppDbContextクラスのインスタンスを受け継いてDbContextプロパティに設定する*/
+            //※このクラスはDBにアクセスするクラスなのでDbContextプロパティにインスタンスを格納して利用する
             this.DbContext = dbContext;
         }
 
@@ -31,6 +33,7 @@ namespace ChatAppServer.Repository
         {
             var user = new User()
             {
+                //各プロパティ(カラム)に該当する情報を格納する
                 Name = userName,
                 Password = password
             };
@@ -60,16 +63,5 @@ namespace ChatAppServer.Repository
         {
             return this.DbContext.Users.Any(r => r.Name == userName);
         }
-
-        /// <summary>
-        /// ユーザー名からIDやパスワードなどの情報を取得するメソッド
-        /// </summary>
-        /// <param name="userName"></param>
-        /// <returns></returns>
-        public User FindByUserName(string userName)
-        {
-
-        }
-
     }
 }

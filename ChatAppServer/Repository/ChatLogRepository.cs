@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChatAppServer.Models;
+using ChatAppServer.Repository;
 
 namespace ChatAppServer.Repository
 {
@@ -12,8 +13,9 @@ namespace ChatAppServer.Repository
     /// </summary>
     public class ChatLogRepository
     {
+        //プロパティ
         private ChatAppDbContext DbContext { get; set; }
-
+        public UserRepository UserRepository { get; set; }
 
         /// <summary>
         /// コンストラクタ
@@ -21,7 +23,11 @@ namespace ChatAppServer.Repository
         /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public ChatLogRepository(ChatAppDbContext dbContext)
         {
+            /*DbContextクラスは複数回newすると変更履歴が消えてしまうため、ChatLogServiceからChatAppDbContextクラスのインスタンスを受け継いてDbContextプロパティに設定する*/
+            //※このクラスはDBにアクセスするクラスなのでDbContextプロパティにインスタンスを格納して利用する
             this.DbContext = dbContext;
+            //Usersテーブルで検索して情報を得る処理が複数追加されることを想定してUserRepositoryのインスタンスをコンストラクタ内で生成しておく。
+            this.UserRepository = new UserRepository(this.DbContext);
         }
 
         /// <summary>
@@ -31,9 +37,16 @@ namespace ChatAppServer.Repository
         /// <param name="msg">会話内容</param>
         public void CreateChatLog(string userName, string msg)
         {
+            //UserIdカラムにユーザーIDの情報を格納するために、ユーザー名から検索してUsersテーブルのIDを取得する
+            //ユーザー名が合致したUsersのレコードを取得する
+            IQueryable<User> user = UserRepository.FindByUserName(userName);
+            //userのIdプロパティを格納する
+            userId = user["Id"];
+
             var chatLog = new ChatLog()
             {
-                //作業メモ：ユーザー名はuserIdにしないといけない...最初からユーザーIDでもらうべきかここで検索して格納すべきか？
+                //各プロパティ(カラム)に該当する情報を格納する
+                UserId = userId,
                 Body = msg
             };
             DbContext.ChatLogs.Add(chatLog);

@@ -45,7 +45,8 @@ namespace ChatAppServer.Service
                 var userName = registrationData.GetHeader().UserName;
                 var msg = registrationData.Message;
 
-                //作業メモ：CreateChatLogを呼び出す処理を書く。登録するだけなのでvoidでいいかな。ユーザー名とIDの変換はCreateChatLog側に任せる？
+                /*作業メモ：CreateChatLogを呼び出す処理を書く。ユーザー名とIDの変換はCreateChatLog側でFindByUserName()でやる*/
+                ChatLogRepository.CreateChatLog(userName, msg);
             }
         }
     }
