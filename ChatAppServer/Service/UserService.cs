@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 using ChatAppServer.Models;
 using ChatAppLibrary.Telegram;
 using ChatAppServer.Repository;
+using ChatAppServer.Service;
 
 namespace ChatAppServer.Service
 {
-
-    //作業メモ：パスワードをハッシュ化する処理は○○Telegramクラス側で行う
-
-
     /// <summary>
     /// UserRepositoryに定義しているビジネスロジックに受け渡すためのメソッド群を定義しているクラス
     /// </summary>
@@ -42,15 +39,18 @@ namespace ChatAppServer.Service
         /// <returns>新しいUserモデルクラスのデータまたはnull</returns>
         public User Register(RegistrationTelegram registrationData)
         {
-            //名前が長いので一度変数に格納します
-            //作業メモ：ハッシュ化されたパスワードを受け取る場合はプロパティ名変えるかも
+            //名前が長いので一度変数に格納する
             var userName = registrationData.GetHeader().UserName;
             var password = registrationData.PassWord;
+
+            //パスワードはセキュリティのためPasswordServiceクラスを使ってハッシュ化する
+            var hashedPassword = new PasswordService().HashPassword(password);
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
             {
-                return UserRepository.CreateUser(userName, password);
+                //既存の名前と重複していなければユーザー名とハッシュ化済みのパスワードをCreateUserに渡す
+                return UserRepository.CreateUser(userName, hashedPassword);
             }
             return null;
         }

@@ -33,15 +33,15 @@ namespace ChatAppServer.Repository
         /// 名前とパスワードをUsersテーブルに追加し、Userモデルクラスのデータとして返す
         /// </summary>
         /// <param name="userName">UserServiceクラスのRegisterから渡されたユーザー名</param>
-        /// <param name="password">UserServiceクラスのRegisterから渡されたパスワード</param>
+        /// <param name="hashedPassword">UserServiceクラスのRegisterから渡されたパスワード</param>
         /// <returns>Userモデル型のデータ</returns>
-        public User CreateUser(string userName, string password)
+        public User CreateUser(string userName, string hashedPassword)
         {
             var user = new User()
             {
                 //各プロパティ(カラム)に該当する情報を格納する
                 Name = userName,
-                Password = password
+                Password = hashedPassword
             };
             DbContext.Users.Add(user);
             DbContext.SaveChanges();
