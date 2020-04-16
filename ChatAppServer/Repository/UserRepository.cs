@@ -61,5 +61,15 @@ namespace ChatAppServer.Repository
             return this.DbContext.Users.Any(r => r.Name == userName);
         }
 
+        /// <summary>
+        /// ユーザー名からIDやパスワードなどの情報を取得するメソッド
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public User FindByUserName(string userName)
+        {
+
+        }
+
     }
 }
