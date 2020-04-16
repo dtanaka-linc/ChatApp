@@ -41,12 +41,12 @@ namespace ChatAppServer.Repository
             //ユーザー名が合致したUsersのレコードを取得してuserに格納する
             IQueryable<User> user = UserRepository.FindByUserName(userName);
             //userのIdプロパティをuserIdに格納する
-            var userId = user.Id;
+            　//エラー出てるのでコメントアウト　var userId = user.Id;
 
             var chatLog = new ChatLog()
             {
                 //ChatLogクラスの各プロパティに該当する情報を格納する
-                UserId = userId,
+             //エラー出てるのでコメントアウト   UserId = userId,
                 Body = msg
             };
             DbContext.ChatLogs.Add(chatLog);
