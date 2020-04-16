@@ -43,7 +43,6 @@
             this.textBoxSendMessage.Name = "textBoxSendMessage";
             this.textBoxSendMessage.Size = new System.Drawing.Size(606, 25);
             this.textBoxSendMessage.TabIndex = 0;
-            this.textBoxSendMessage.TextChanged += new System.EventHandler(this.textBoxSendMessage_TextChanged);
             // 
             // buttonSendMessage
             // 

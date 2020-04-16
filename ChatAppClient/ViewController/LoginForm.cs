@@ -96,7 +96,7 @@ namespace ChatAppServer
         {          
             var strArray = new[] { type.ToString(), userName, password };
 
-            var sendtext = string.Join(", ", strArray);
+            var sendtext = string.Join(",", strArray);
 
             return sendtext;
         }
