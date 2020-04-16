@@ -41,7 +41,6 @@ namespace ChatAppServer.Repository
             //ユーザー名が合致したUsersのレコードを取得する
             IQueryable<User> user = UserRepository.FindByUserName(userName);
             //userのIdプロパティを格納する
-            userId = user["Id"];
 
             var chatLog = new ChatLog()
             {
