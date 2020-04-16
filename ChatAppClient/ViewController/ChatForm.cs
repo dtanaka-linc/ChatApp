@@ -27,8 +27,11 @@ namespace ChatAppClient.ViewController
         /// <summary>
         /// 処理種別
         /// </summary>
-        private const int process_number = 3;
+        private const int ProcessNumber = 3;
 
+        /// <summary>
+        /// ログイン中のユーザー名
+        /// </summary>
         public string loginUser { get; set; }
 
         /// <summary>
@@ -55,27 +58,18 @@ namespace ChatAppClient.ViewController
         private void buttonSendMessage_Click(object sender, EventArgs e)
         {
             // サーバー送信用のテキストに結合
-            var sendText = this.MakeSendText(process_number, this.loginUser, textBoxSendMessage.Text);
-
-            richTextBoxLog.Text = this.loginUser + textBoxSendMessage.Text;
+            var sendText = this.MakeSendText(ProcessNumber, this.loginUser, textBoxSendMessage.Text);
 
             // サーバーに送信
             this.clientService.SendMessage(sendText);
 
         }
 
-        //private void richTextBoxLog_TextChanged(object sender, EventArgs e)
-        //{
-
-        //}
-
-        //private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        //{
-
-        //}
-
-
-        //ストリップ項目：サーバーに接続
+        /// <summary>
+        /// メニュー：接続ボタンクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toolStripMenuItemServerConnect_Click(object sender, EventArgs e)
         {
 
@@ -85,6 +79,11 @@ namespace ChatAppClient.ViewController
             buttonSendMessage.Enabled = true;
         }
 
+        /// <summary>
+        /// 本フォームを起動時にサーバー接続
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChatForm_Load(object sender, EventArgs e)
         {
             //コメントアウトを外すとフォームを開いたときにサーバーに接続を行います
@@ -107,11 +106,6 @@ namespace ChatAppClient.ViewController
 
         }
 
-        private void textBoxSendMessage_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         //データ受信時にイベント発火！　チャット画面を更新する
         private void ChatForm_MessageReceived(object sender,byte[] recieveTelegram)
         {
@@ -119,7 +113,9 @@ namespace ChatAppClient.ViewController
 
             // テキストの更新  
             //　暫定　ユーザー名:メッセージ
-            richTextBoxLog.Text = telegram.GetHeader().UserName + ":" +telegram.Message + "\r\n" + richTextBoxLog.Text;
+            var message = telegram.GetHeader().UserName + " : " +telegram.Message + "\r\n";
+
+            this.SetMessage(message);
         }
 
         /// <summary>
@@ -136,6 +132,41 @@ namespace ChatAppClient.ViewController
             var sendtext = string.Join(", ", strArray);
 
             return sendtext;
+        }
+
+        /// <summary>
+        /// 非同期呼び出しのためのデリゲート
+        /// </summary>
+        /// <param name="message"></param>
+        delegate void SetMessagetCallBack(string message);
+
+        /// <summary>
+        /// テキストボックスに受け取ったメッセージを更新していく
+        /// </summary>
+        /// <param name="message"></param>
+        private void SetMessage(string message)
+        {
+            if (richTextBoxLog.IsDisposed) return;
+
+            if (richTextBoxLog.InvokeRequired)
+            {
+                // コールバック作成
+                SetMessagetCallBack setMessagetCallBack = new SetMessagetCallBack(SetMessage);
+
+                // コントロールのスレッドで実行
+                richTextBoxLog.Invoke(setMessagetCallBack, new object[] { message });
+            }
+            else
+            {
+                if(richTextBoxLog.Text == "")
+                {
+                    richTextBoxLog.Text = message;
+                }
+                else
+                {
+                    richTextBoxLog.Text += message;
+                }     
+            }
         }
     }
 }
