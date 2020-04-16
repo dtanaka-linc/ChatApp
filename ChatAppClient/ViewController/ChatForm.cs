@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Net.Sockets;
 using ChatAppClient.Service;
 using System.Threading;
+using ChatAppLibrary.Telegram;
+using ChatAppLibrary.TelegramService;
 
 namespace ChatAppClient.ViewController
 {
@@ -22,6 +24,18 @@ namespace ChatAppClient.ViewController
         String host = "localhost";
         int port = 2001;
 
+        /// <summary>
+        /// 処理種別
+        /// </summary>
+        private const int process_number = 3;
+
+        public string loginUser { get; set; }
+
+        /// <summary>
+        /// チャットの処理番号
+        /// </summary>
+        private const int ProcessType = 3;
+
         public ChatForm()
         {
 
@@ -33,22 +47,32 @@ namespace ChatAppClient.ViewController
             clientService.messageReceived += new ClientService.ReceivedEventHandler(ChatForm_MessageReceived); 
         }
 
+        /// <summary>
+        /// 送信ボタンクリック
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonSendMessage_Click(object sender, EventArgs e)
         {
+            // サーバー送信用のテキストに結合
+            var sendText = this.MakeSendText(process_number, this.loginUser, textBoxSendMessage.Text);
 
-            clientService.SendMessage(textBoxSendMessage.Text);
+            richTextBoxLog.Text = this.loginUser + textBoxSendMessage.Text;
 
-        }
-
-        private void richTextBoxLog_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
+            // サーバーに送信
+            this.clientService.SendMessage(sendText);
 
         }
+
+        //private void richTextBoxLog_TextChanged(object sender, EventArgs e)
+        //{
+
+        //}
+
+        //private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        //{
+
+        //}
 
 
         //ストリップ項目：サーバーに接続
@@ -64,11 +88,9 @@ namespace ChatAppClient.ViewController
         private void ChatForm_Load(object sender, EventArgs e)
         {
             //コメントアウトを外すとフォームを開いたときにサーバーに接続を行います
-/*
+
             //マルチスタートアッププロジェクトでサーバーと同時起動時の動作確認用
             Thread.Sleep(1000);
-
-            Console.WriteLine("load時の自動接続処理完了");
 
             try
             {
@@ -82,7 +104,7 @@ namespace ChatAppClient.ViewController
                 //ちゃんとした例外処理にあとで修正
                 Console.WriteLine("起動時接続に失敗したので手動で接続してください！");
             }
-*/
+
         }
 
         private void textBoxSendMessage_TextChanged(object sender, EventArgs e)
@@ -91,23 +113,29 @@ namespace ChatAppClient.ViewController
         }
 
         //データ受信時にイベント発火！　チャット画面を更新する
-        private void ChatForm_MessageReceived(object sender,byte[] telegram)
+        private void ChatForm_MessageReceived(object sender,byte[] recieveTelegram)
         {
-            //if (this.IsDisposed)
-            //{
-            //    return;
-            //}
-            //if (this.InvokeRequired)
-            //{
-            //    this.Invoke((MethodInvoker)delegate
-            //    {
-            //        ChatForm_MessageReceived(sender, text);
-            //    });
-            //}
-            //else
-            //{
-            //    richTextBoxLog.Text = "user（未実装）>" + text + "\r\n" + richTextBoxLog.Text;
-            //}
+            var telegram = new ChatTelegram(recieveTelegram);
+
+            // テキストの更新  
+            //　暫定　ユーザー名:メッセージ
+            richTextBoxLog.Text = telegram.GetHeader().UserName + ":" +telegram.Message + "\r\n" + richTextBoxLog.Text;
+        }
+
+        /// <summary>
+        /// Sendメソッドに渡すために必要なデータを結合する
+        /// </summary>
+        /// <param name="type">処理種別</param>
+        /// <param name="userName">ユーザー名</param>
+        /// <param name="password">パスワード</param>
+        /// <returns></returns>
+        public string MakeSendText(int type, string userName, string message)
+        {
+            var strArray = new[] { type.ToString(), userName, message };
+
+            var sendtext = string.Join(", ", strArray);
+
+            return sendtext;
         }
     }
 }

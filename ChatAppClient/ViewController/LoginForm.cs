@@ -2,6 +2,7 @@
 using System;
 using System.Windows.Forms;
 using ChatAppClient.Service;
+using ChatAppClient.ViewController;
 using ChatAppLibrary.Telegram;
 using ChatAppLibrary.TelegramService;
 using System.Text;
@@ -14,8 +15,10 @@ namespace ChatAppServer
         String host = "localhost";
         int port = 2001;
 
-        //　認証要求の処理番号
-        int process_type = 1;
+        /// <summary>
+        /// 認証要求の処理番号
+        /// </summary>
+        private const int ProcessType = 1;
 
         public LoginForm()
         {
@@ -45,23 +48,11 @@ namespace ChatAppServer
             {
                 service.Connect(host, port);
                 // 送信するデータの作成（string）
-                var sendText = this.MakeSendText(process_type, this.NameTextBox.Text, this.PasswordTextBox.Text);
+                var sendText = this.MakeSendText(ProcessType, this.NameTextBox.Text, this.PasswordTextBox.Text);
 
                 // サーバーにデータを送信
                 service.SendMessage(sendText);
 
-                // 認証結果がtrueと受け取ったと仮定する
-                var authResult = true;
-                // 認証成功時に画面遷移
-                if (authResult)
-                {
-                    // Chatフォームに遷移する
-                    
-                }
-                else
-                {
-                    MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
             }
 
         }
@@ -73,13 +64,25 @@ namespace ChatAppServer
         /// <param name="text"></param>
         private void LoginForm_MessageReceived(object sender, byte[] recieveTelegram)
         {
-            //var telegram = GetTelegram(recieveTelegram);
-            var telegram = TelegramRogic.GetTelegram(recieveTelegram);
 
-            //switch (telegram.GetHeader().Type)
-            //{
+            // サーバー側からの返答が応答のテレグラムになったら外す
+            //var telegram = new AuthResponseTelegram(recieveTelegram);
+            //var authResult = telegram.AuthResult;
 
-            //}
+            // 画面遷移の動作確認用　
+            var authResult = true;
+            // 認証成功時に画面遷移
+            if (authResult)
+            {
+                // Chatフォームに遷移する
+                ChatForm chatForm = new ChatForm();
+                chatForm.loginUser = this.NameTextBox.Text;
+                chatForm.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         /// <summary>
