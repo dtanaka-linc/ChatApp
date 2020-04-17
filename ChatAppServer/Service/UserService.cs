@@ -16,8 +16,9 @@ namespace ChatAppServer.Service
     public class UserService
     {
         //プロパティ
-        /*UserRepositoryインスタンスはこのクラスの複数のメソッドで使うのでコンストラクタで生成されたらプロパティに格納している*/
+        //複数のメソッドで利用するインスタンスをコンストラクタから受け取り格納する
         public UserRepository UserRepository { get; set; }
+        public PasswordService PasswordService { get; set; }
 
 
         /// <summary>
@@ -26,9 +27,10 @@ namespace ChatAppServer.Service
         /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserService(ChatAppDbContext dbContext)
         {
-            /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
+            /*UserRepositoryとPasswordServiceのインスタンスはこのクラスの複数のメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
             /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
             this.UserRepository = new UserRepository(dbContext);
+            this.PasswordService = new PasswordService();
         }
 
 
@@ -44,7 +46,7 @@ namespace ChatAppServer.Service
             var normalPassword = registrationData.PassWord;
 
             //パスワードはセキュリティのためPasswordServiceクラスを使ってハッシュ化する
-            var hashedPassword = new PasswordService().ToHashPassword(normalPassword);
+            var hashedPassword = PasswordService.ToHashPassword(normalPassword);
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
@@ -70,7 +72,7 @@ namespace ChatAppServer.Service
             //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
             var user =UserRepository.FindByUserName(userName);
             /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
-            var authResult = new PasswordService().VerifyPassword(user.Password, normalPassword);
+            var authResult = PasswordService.VerifyPassword(user.Password, normalPassword);
 
             return authResult;
         }
