@@ -33,15 +33,15 @@ namespace ChatAppServer.Repository
         /// 名前とパスワードをUsersテーブルに追加し、Userモデルクラスのデータとして返す
         /// </summary>
         /// <param name="userName">UserServiceクラスのRegisterから渡されたユーザー名</param>
-        /// <param name="password">UserServiceクラスのRegisterから渡されたパスワード</param>
+        /// <param name="hashedPassword">UserServiceクラスのRegisterから渡されたパスワード</param>
         /// <returns>Userモデル型のデータ</returns>
-        public User CreateUser(string userName, string password)
+        public User CreateUser(string userName, string hashedPassword)
         {
             var user = new User()
             {
                 //各プロパティ(カラム)に該当する情報を格納する
                 Name = userName,
-                Password = password
+                Password = hashedPassword
             };
             DbContext.Users.Add(user);
             DbContext.SaveChanges();
@@ -49,27 +49,14 @@ namespace ChatAppServer.Repository
         }
 
         /// <summary>
-        ///UserServiceのAuthメソッドから渡されたユーザー名・パスワードのレコードがUsersテーブルに存在するかどうかを確認する
-        /// </summary>
-        ///<param name="userName">UserServiceのAuthメソッドから渡されたユーザー名</param>
-        ///<param name="password">UserServiceのAuthメソッドから渡されたパスワード</param>
-        /// <returns>該当するユーザー名とパスワードの組み合わせのレコードがあればtrue、なければfalse</returns>
-        public bool Auth(string userName, string password)
-        {
-            //ユーザー名が一致したレコードに対してパスワードが存在するかを調べる
-            return this.DbContext.Users
-                .Where(r => r.Name == userName)
-                .Any(r => r.Password == password);
-        }
-
-        /// <summary>
-        /// ユーザー名で検索する
+        /// 一意のユーザー名でユーザー情報を検索する
         /// </summary>
         /// <param name="userName">ユーザー名</param>
-        /// <returns>ユーザー名で検索した結果</returns>
-        public IQueryable<User> FindByUserName(string userName)
+        /// <returns>ヒットしたUsersのレコード(Userモデルクラス型)</returns>
+        public User FindByUserName(string userName)
         {
-            return this.DbContext.Users.Where(r => r.Name == userName);
+            /*ユーザー名が一致したデータが1件ならそのデータ(Userモデルクラス型)、そうでない場合は例外が発生するが、ユーザー名はExistsUserNameメソッドで一意にしか登録できなくなっているので実装しない*/
+                return this.DbContext.Users.Where(r => r.Name == userName).FirstOrDefault();
         }
 
 

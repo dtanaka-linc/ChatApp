@@ -1,5 +1,6 @@
 ﻿using ChatAppClient.Service;
 using ChatAppClient.ViewController;
+using ChatAppLibrary.Constants;
 using ChatAppLibrary.Telegram;
 using ChatAppLibrary.TelegramService;
 using System;
@@ -10,10 +11,10 @@ namespace ChatAppClient
 {
     public partial class RegisterForm : Form
     {
+        /// <summary>
+        /// ログインフォームでの入力ユーザー名受け渡し用のプロパティ
+        /// </summary>
         public string userNameParam { get; set; }
-
-        String host = "localhost";
-        int port = 2001;
 
         /// <summary>
         /// 登録要求の処理種別
@@ -44,8 +45,10 @@ namespace ChatAppClient
             // 認証成功時に画面遷移
             if (authResult)
             {
+                Invoke(new FormHideDelegate(FormHide));
+
                 // 登録完了のメッセージ表示
-                MessageBox.Show("登録完了しました", "成功", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                MessageBox.Show(DisplayMessage.REGISTERD, DisplayMessage.CONFIRMATION_RESULT, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
@@ -54,7 +57,8 @@ namespace ChatAppClient
             }
             else
             {
-                MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(DisplayMessage.MESSAGE_REGISTRATION_FAILED, DisplayMessage.CONFIRMATION_RESULT, 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -70,7 +74,7 @@ namespace ChatAppClient
                 // パスワードと確認用の入力が一致しない場合は警告する
                 if (passTextBox.Text != confirmTextBox.Text)
                 {
-                    MessageBox.Show("入力したパスワードが一致しません", "警告",
+                    MessageBox.Show(DisplayMessage.PASSWORD_MISSMATCH, DisplayMessage.WARNING,
                                      MessageBoxButtons.YesNo,
                                      MessageBoxIcon.Question);
                 }
@@ -80,7 +84,7 @@ namespace ChatAppClient
                     service.messageReceived += new ClientService.ReceivedEventHandler(RegisterForm_MessageReceived);
                     
                     // サーバーに接続する
-                    service.Connect(host, port);
+                    service.Connect(ConnectionInfo.HOST, ConnectionInfo.PORT);
 
                     // 送信するデータを結合
                     var sendTelegram = this.MakeSendText(ProcessType, userNameTextBox.Text, passTextBox.Text);
@@ -92,7 +96,7 @@ namespace ChatAppClient
             }
             else
             {
-                MessageBox.Show("ユーザー名を入力して下さい", "警告",
+                MessageBox.Show(DisplayMessage.INPUT_REQUIRED, DisplayMessage.WARNING,
                  MessageBoxButtons.YesNo,
                  MessageBoxIcon.Question);
             }
@@ -120,9 +124,19 @@ namespace ChatAppClient
         {
             var strArray = new[] { type.ToString(), userName, password };
 
-            var sendtext = string.Join(", ", strArray);
+            var sendtext = string.Join(",", strArray);
 
             return sendtext;
+        }
+
+        /// <summary>
+        /// LoginForm_MessageReceived内でフォームの状態を変更するのに使用するデリゲート
+        /// </summary>
+        delegate void FormHideDelegate();
+
+        private void FormHide()
+        {
+            this.Close();
         }
     }
 }

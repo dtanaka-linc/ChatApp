@@ -56,7 +56,7 @@ namespace ChatAppLibrary.Telegram
         {
             var strArray = new[] { GetHeader().Type.ToString(), GetHeader().UserName, AuthResult.ToString() };
 
-            var sendtext = string.Join(", ", strArray);
+            var sendtext = string.Join(",", strArray);
 
             return sendtext;
         }

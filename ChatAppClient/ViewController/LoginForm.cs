@@ -5,16 +5,13 @@ using ChatAppClient.Service;
 using ChatAppClient.ViewController;
 using ChatAppLibrary.Telegram;
 using ChatAppLibrary.TelegramService;
+using ChatAppLibrary.Constants;
 using System.Text;
 
 namespace ChatAppServer
 {
     public partial class LoginForm : Form
     {
-        //確認用　設定は後で外部ファイル管理する！
-        String host = "localhost";
-        int port = 2001;
-
         /// <summary>
         /// 認証要求の処理番号
         /// </summary>
@@ -43,10 +40,13 @@ namespace ChatAppServer
                 registerForm.userNameParam = this.NameTextBox.Text;
 
                 registerForm.ShowDialog();
+                this.Hide();
             }
             else
             {
-                service.Connect(host, port);
+                // サーバーに接続
+                service.Connect(ConnectionInfo.HOST, ConnectionInfo.PORT);
+
                 // 送信するデータの作成（string）
                 var sendText = this.MakeSendText(ProcessType, this.NameTextBox.Text, this.PasswordTextBox.Text);
 
@@ -71,9 +71,13 @@ namespace ChatAppServer
 
             // 画面遷移の動作確認用　
             var authResult = true;
+
             // 認証成功時に画面遷移
             if (authResult)
             {
+                // Loginフォームをhideする
+                Invoke(new FormHideDelegate(FormHide));
+
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
                 chatForm.loginUser = this.NameTextBox.Text;
@@ -81,7 +85,8 @@ namespace ChatAppServer
             }
             else
             {
-                MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(DisplayMessage.MESSAGE_AUTH_FAILED, DisplayMessage.CONFIRMATION_RESULT, 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -101,5 +106,14 @@ namespace ChatAppServer
             return sendtext;
         }
 
+        /// <summary>
+        /// LoginForm_MessageReceived内でフォームの状態を変更するのに使用するデリゲート
+        /// </summary>
+        delegate void FormHideDelegate();
+
+        private void FormHide()
+        {
+            this.Hide();
+        }
     }
 }
