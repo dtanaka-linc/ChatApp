@@ -6,21 +6,19 @@ using System.Threading.Tasks;
 using ChatAppServer.Models;
 using ChatAppLibrary.Telegram;
 using ChatAppServer.Repository;
+using ChatAppServer.Service;
 
 namespace ChatAppServer.Service
 {
-
-    //作業メモ：パスワードをハッシュ化する処理は○○Telegramクラス側で行う
-
-
     /// <summary>
     /// UserRepositoryに定義しているビジネスロジックに受け渡すためのメソッド群を定義しているクラス
     /// </summary>
     public class UserService
     {
         //プロパティ
-        /*UserRepositoryインスタンスはこのクラスの複数のメソッドで使うのでコンストラクタで生成されたらプロパティに格納している*/
+        //複数のメソッドで利用するインスタンスをコンストラクタから受け取り格納する
         public UserRepository UserRepository { get; set; }
+        public PasswordService PasswordService { get; set; }
 
 
         /// <summary>
@@ -29,9 +27,10 @@ namespace ChatAppServer.Service
         /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
         public UserService(ChatAppDbContext dbContext)
         {
-            /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
+            /*UserRepositoryとPasswordServiceのインスタンスはこのクラスの複数のメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
             /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずUserRepositoryインスタンス生成時の引数としてだけ利用する*/
             this.UserRepository = new UserRepository(dbContext);
+            this.PasswordService = new PasswordService();
         }
 
 
@@ -42,20 +41,22 @@ namespace ChatAppServer.Service
         /// <returns>新しいUserモデルクラスのデータまたはnull</returns>
         public User Register(RegistrationTelegram registrationData)
         {
-            //名前が長いので一度変数に格納します
-            //作業メモ：ハッシュ化されたパスワードを受け取る場合はプロパティ名変えるかも
+            //名前が長いので一度変数に格納する
             var userName = registrationData.GetHeader().UserName;
-            var password = registrationData.PassWord;
+            var normalPassword = registrationData.PassWord;
+
+            //パスワードはセキュリティのためPasswordServiceクラスを使ってハッシュ化する
+            var hashedPassword = PasswordService.ToHashPassword(normalPassword);
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
             {
-                return UserRepository.CreateUser(userName, password);
+                //既存の名前と重複していなければユーザー名とハッシュ化済みのパスワードをCreateUserに渡す
+                return UserRepository.CreateUser(userName, hashedPassword);
             }
             return null;
         }
     
-
 
         /// <summary>
         /// RegistrationTelegramで文字列に戻されたユーザー名やハッシュ化済みのパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
@@ -66,10 +67,12 @@ namespace ChatAppServer.Service
         {
             //名前が長いのでAuthTeregramの各プロパティの情報を変数に格納する
             var userName = authRequestData.GetHeader().UserName;
-            var password = authRequestData.PassWord;
+            var normalPassword = authRequestData.PassWord;
 
-            //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とハッシュ化済みのパスワードの組み合わせのデータがあればtrue、なければfalse)
-            return UserRepository.Auth(userName, password);
+            //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
+            var user =UserRepository.FindByUserName(userName);
+            /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
+            return PasswordService.VerifyPassword(user.Password, normalPassword);
         }
     }
 }
