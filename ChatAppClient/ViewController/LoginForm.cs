@@ -5,16 +5,13 @@ using ChatAppClient.Service;
 using ChatAppClient.ViewController;
 using ChatAppLibrary.Telegram;
 using ChatAppLibrary.TelegramService;
+using ChatAppLibrary.Constants;
 using System.Text;
 
 namespace ChatAppServer
 {
     public partial class LoginForm : Form
     {
-        //確認用　設定は後で外部ファイル管理する！
-        String host = "localhost";
-        int port = 2001;
-
         /// <summary>
         /// 認証要求の処理番号
         /// </summary>
@@ -48,7 +45,7 @@ namespace ChatAppServer
             else
             {
                 // サーバーに接続
-                service.Connect(host, port);
+                service.Connect(ConnectionInfo.HOST, ConnectionInfo.PORT);
 
                 // 送信するデータの作成（string）
                 var sendText = this.MakeSendText(ProcessType, this.NameTextBox.Text, this.PasswordTextBox.Text);
@@ -88,7 +85,8 @@ namespace ChatAppServer
             }
             else
             {
-                MessageBox.Show("ユーザー名かパスワードが間違っています", "認証結果", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(DisplayMessage.MESSAGE_AUTH_FAILED, DisplayMessage.CONFIRMATION_RESULT, 
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
