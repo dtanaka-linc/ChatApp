@@ -48,13 +48,15 @@ namespace ChatAppServer.Service
             var password = registrationData.PassWord;
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
-            if (UserRepository.ExistsUserName(userName))
+            if (!UserRepository.ExistsUserName(userName))
             {
+                Console.WriteLine("UserService：ユーザー新規登録（{0},{1}）を行います", userName, password);
                 return UserRepository.CreateUser(userName, password);
             }
+            Console.WriteLine("UserService：既存のユーザー名と重複したためnullを返します");
             return null;
         }
-    
+
 
 
         /// <summary>

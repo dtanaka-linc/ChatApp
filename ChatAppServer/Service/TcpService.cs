@@ -177,7 +177,10 @@ namespace ChatAppServer.Service
             //UserService.Register：DBと接続して新規登録
             User authUser = userService.Register(receiveIt);
             //テレグラム側でUserクラスを使いたいが循環参照になってしまうのでいったんここで処理
-            sendIt.GetHeader().UserName = authUser.Name;
+            if (authUser != null)
+            {
+                sendIt.GetHeader().UserName = authUser.Name;
+            }
 
             //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
             string str = sendIt.ToTelegramText();
