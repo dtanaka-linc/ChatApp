@@ -41,10 +41,10 @@ namespace ChatAppServer.Service
         {
             //名前が長いので一度変数に格納する
             var userName = registrationData.GetHeader().UserName;
-            var password = registrationData.PassWord;
+            var normalPassword = registrationData.PassWord;
 
             //パスワードはセキュリティのためPasswordServiceクラスを使ってハッシュ化する
-            var hashedPassword = new PasswordService().ToHashPassword(password);
+            var hashedPassword = new PasswordService().ToHashPassword(normalPassword);
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
@@ -65,14 +65,14 @@ namespace ChatAppServer.Service
         {
             //名前が長いのでAuthTeregramの各プロパティの情報を変数に格納する
             var userName = authRequestData.GetHeader().UserName;
-            var password = authRequestData.PassWord;
+            var normalPassword = authRequestData.PassWord;
 
             //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
             var user =UserRepository.FindByUserName(userName);
             /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
-            var result = new PasswordService().VerifyPassword(user.Password, password);
+            var authResult = new PasswordService().VerifyPassword(user.Password, normalPassword);
 
-            return result;
+            return authResult;
         }
     }
 }
