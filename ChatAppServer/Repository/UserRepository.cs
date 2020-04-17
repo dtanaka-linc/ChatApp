@@ -49,20 +49,6 @@ namespace ChatAppServer.Repository
         }
 
         /// <summary>
-        ///UserServiceのAuthメソッドから渡されたユーザー名・パスワードのレコードがUsersテーブルに存在するかどうかを確認する
-        /// </summary>
-        ///<param name="userName">UserServiceのAuthメソッドから渡されたユーザー名</param>
-        ///<param name="password">UserServiceのAuthメソッドから渡されたパスワード</param>
-        /// <returns>該当するユーザー名とパスワードの組み合わせのレコードがあればtrue、なければfalse</returns>
-        public bool Auth(string userName, string password)
-        {
-            //ユーザー名が一致したレコードに対してパスワードが存在するかを調べる
-            return this.DbContext.Users
-                .Where(r => r.Name == userName)
-                .Any(r => r.Password == password);
-        }
-
-        /// <summary>
         /// 一意のユーザー名でユーザー情報を検索する
         /// </summary>
         /// <param name="userName">ユーザー名</param>
