@@ -43,10 +43,13 @@ namespace ChatAppServer
                 registerForm.userNameParam = this.NameTextBox.Text;
 
                 registerForm.ShowDialog();
+                this.Hide();
             }
             else
             {
+                // サーバーに接続
                 service.Connect(host, port);
+
                 // 送信するデータの作成（string）
                 var sendText = this.MakeSendText(ProcessType, this.NameTextBox.Text, this.PasswordTextBox.Text);
 
@@ -71,9 +74,13 @@ namespace ChatAppServer
 
             // 画面遷移の動作確認用　
             var authResult = true;
+
             // 認証成功時に画面遷移
             if (authResult)
             {
+                // Loginフォームをhideする
+                Invoke(new FormHideDelegate(FormHide));
+
                 // Chatフォームに遷移する
                 ChatForm chatForm = new ChatForm();
                 chatForm.loginUser = this.NameTextBox.Text;
@@ -101,5 +108,14 @@ namespace ChatAppServer
             return sendtext;
         }
 
+        /// <summary>
+        /// LoginForm_MessageReceived内でフォームの状態を変更するのに使用するデリゲート
+        /// </summary>
+        delegate void FormHideDelegate();
+
+        private void FormHide()
+        {
+            this.Hide();
+        }
     }
 }
