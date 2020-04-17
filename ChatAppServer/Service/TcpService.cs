@@ -37,6 +37,7 @@ namespace ChatAppServer.Service
 
         private ChatAppDbContext dbcon;
         private UserService userService;
+        private ChatLogService chatLogService;
 
         //コンストラクタ
         public TcpService()
@@ -49,7 +50,9 @@ namespace ChatAppServer.Service
             acceptedClients = new ArrayList();
 
             dbcon = new ChatAppDbContext();
+
             userService = new UserService(dbcon);
+            chatLogService = new ChatLogService(dbcon);
 
         }
 
@@ -187,6 +190,8 @@ namespace ChatAppServer.Service
             ChatTelegram receiveIt = new ChatTelegram(telegram);
 
             string str = receiveIt.ToTelegramText();
+            //チャットログ
+            chatLogService.Register(receiveIt);
 
             SendAllClientMessage(str);
 

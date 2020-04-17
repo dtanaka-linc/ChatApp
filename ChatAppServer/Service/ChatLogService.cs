@@ -12,11 +12,7 @@ namespace ChatAppServer.Service
 {
     public class ChatLogService
     {
-        /// <summary>
-        /// ChatLogRepositoryに定義しているビジネスロジックに受け渡すためのメソッド群を定義しているクラス
-        /// </summary>
-        public class UserService
-        {
+        
             //プロパティ
             /*ChatLogReopsitoryのインスタンスをコンストラクタによって格納する。現状はメソッドが一つだけだが、今後追加される可能性も考えてプロパティにしておいた*/
             public ChatLogRepository ChatLogRepository { get; set; }
@@ -26,7 +22,7 @@ namespace ChatAppServer.Service
             /// コンストラクタ
             /// </summary>
             /// <param name="dbContext">データベースの接続やエンティティの管理を担当するChatAppDbContextクラスのインスタンス</param>
-            public UserService(ChatAppDbContext dbContext)
+            public ChatLogService(ChatAppDbContext dbContext)
             {
                 /*UserRepositoryのインスタンスはこのクラスのすべてのメソッドで利用するのでコンストラクタ内でインスタンスを生成しプロパティに格納しておく*/
                 /*DbContextはコールするごとにnewすると変更履歴が失われてしまうので○○Telegramクラスからこのクラスをコールされるときに受け取るようにする。また、このクラス内から直接DBを参照するのを防ぐためにプロパティは定義せずChatLogRepositoryインスタンス生成時の引数としてだけ利用する*/
@@ -48,6 +44,6 @@ namespace ChatAppServer.Service
                 //ビジネスロジック分離のためCreateChatLogにデータを渡す
                 ChatLogRepository.CreateChatLog(userName, msg);
             }
-        }
+        
     }
 }
