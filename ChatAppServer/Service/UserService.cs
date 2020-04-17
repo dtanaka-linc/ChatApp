@@ -72,9 +72,7 @@ namespace ChatAppServer.Service
             //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
             var user =UserRepository.FindByUserName(userName);
             /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
-            var authResult = PasswordService.VerifyPassword(user.Password, normalPassword);
-
-            return authResult;
+            return PasswordService.VerifyPassword(user.Password, normalPassword);
         }
     }
 }

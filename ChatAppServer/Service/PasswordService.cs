@@ -22,11 +22,7 @@ namespace ChatAppServer.Service
         /// <returns>一致すればtrue、一致しなければfalse</returns>
         public bool VerifyPassword(string hashedPassword, string normalPassword)
         {
-            if(hashedPassword == ToHashPassword(normalPassword))
-            {
-                return true;
-            }
-            return false;
+            return hashedPassword == ToHashPassword(normalPassword);
         }
 
 

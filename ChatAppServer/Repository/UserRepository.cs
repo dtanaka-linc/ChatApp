@@ -55,17 +55,8 @@ namespace ChatAppServer.Repository
         /// <returns>ヒットしたUsersのレコード(Userモデルクラス型)</returns>
         public User FindByUserName(string userName)
         {
-            //ユーザー名が一致したデータが1件ならそのデータ(Userモデルクラス型)、そうでない場合は例外
-            try
-            {
-                return this.DbContext.Users.Where(r => r.Name == userName).SingleOrDefault();
-            }
-            //データが複数ある場合の例外 この処理の仕方でいいかな・・・？
-            catch(InvalidOperationException e)
-            {
-                Console.WriteLine(e.Message);
-                return null;
-            }
+            /*ユーザー名が一致したデータが1件ならそのデータ(Userモデルクラス型)、そうでない場合は例外が発生するが、ユーザー名はExistsUserNameメソッドで一意にしか登録できなくなっているので実装しない*/
+                return this.DbContext.Users.Where(r => r.Name == userName).FirstOrDefault();
         }
 
 
