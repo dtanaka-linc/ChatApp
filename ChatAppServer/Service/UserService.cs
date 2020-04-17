@@ -59,7 +59,7 @@ namespace ChatAppServer.Service
         }
 
 
-        /// <summary>
+        /// <summary>git 
         /// RegistrationTelegramで文字列に戻されたユーザー名やハッシュ化済みのパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
         /// </summary>
         /// <param name="authRequestData">AuthTelegramのインスタンス</param>
@@ -71,7 +71,7 @@ namespace ChatAppServer.Service
             var normalPassword = authRequestData.PassWord;
 
             //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
-            var user =UserRepository.FindByUserName(userName);
+            var user = UserRepository.FindByUserName(userName);
             /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
             return PasswordService.VerifyPassword(user.Password, normalPassword);
         }

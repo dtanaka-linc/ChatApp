@@ -155,11 +155,6 @@ namespace ChatAppServer.Service
             //UserService.Auth：DBと接続して認証
             sendIt.AuthResult = userService.Auth(receiveIt);
 
-            //確認用の仮の値(UserServiceを使うときに削除)
-            //sendIt.AuthResult = true;
-
-
-            //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), authResult);
             string str = sendIt.ToTelegramText();
 
             SendClientMessage(stateClient, str);
@@ -182,7 +177,6 @@ namespace ChatAppServer.Service
                 sendIt.GetHeader().UserName = authUser.Name;
             }
 
-            //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.PassWord);
             string str = sendIt.ToTelegramText();
 
             SendClientMessage(stateClient, str);
@@ -190,14 +184,8 @@ namespace ChatAppServer.Service
 
         private void SendChat(byte[] telegram)
         {
-            //Itelegramにプロパティがないのでいったんコメントアウト
-            //ITelegram receiveIt = new ChatTelegram(telegram);
             ChatTelegram receiveIt = new ChatTelegram(telegram);
 
-            Console.WriteLine(receiveIt.GetHeader().Type.ToString());
-            Console.WriteLine(receiveIt.GetHeader().UserName.ToString());
-
-            //string str = MakeSendText(receiveIt.GetHeader().Type, receiveIt.GetHeader().UserName.ToString(), receiveIt.Message);
             string str = receiveIt.ToTelegramText();
 
             SendAllClientMessage(str);
