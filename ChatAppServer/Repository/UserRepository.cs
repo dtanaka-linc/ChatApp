@@ -63,17 +63,24 @@ namespace ChatAppServer.Repository
         }
 
         /// <summary>
-        /// ユーザー名で検索する（複数のユーザー名がヒットしてしまうので別にFindUserByIdメソッドを定義）
+        /// 一意のユーザー名でユーザー情報を検索する
         /// </summary>
         /// <param name="userName">ユーザー名</param>
-        /// <returns>ユーザー名で検索した結果</returns>
-        public IQueryable<User> FindByUserName(string userName)
+        /// <returns>ヒットしたUsersのレコード(Userモデルクラス型)</returns>
+        public User FindByUserName(string userName)
         {
-            return this.DbContext.Users.Where(r => r.Name == userName);
+            //ユーザー名が一致したデータが1件ならそのデータ(Userモデルクラス型)、そうでない場合は例外
+            try
+            {
+                return this.DbContext.Users.Where(r => r.Name == userName).SingleOrDefault();
+            }
+            //データが複数ある場合の例外 この処理の仕方でいいかな・・・？
+            catch(InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
         }
-
-
-
 
 
         /// <summary>
