@@ -35,8 +35,6 @@ namespace ChatAppServer.Service
 
         public static ArrayList acceptedClients;
 
-        public UserRepository userRepository;
-
         private ChatAppDbContext dbcon;
         private UserService userService;
 
@@ -50,7 +48,7 @@ namespace ChatAppServer.Service
             //接続中のクライアントのコレクション
             acceptedClients = new ArrayList();
 
-
+            dbcon = new ChatAppDbContext();
             userService = new UserService(dbcon);
 
         }
