@@ -8,24 +8,36 @@ using Microsoft.AspNet.Identity;
 
 namespace ChatAppServer.Service
 {
+    /// <summary>
+    /// パスワードのハッシュ化と照合に関するメソッド群をまとめたクラス
+    /// </summary>
     public class PasswordService
     {
-        //Authテレグラムから受け取ったパスワードがハッシュ化されたものと一緒か確かめる
-        //UserRepository.Authから呼ばれる。DBからゲットしたパスワード(ハッシュ)と入力された平文を照合する
-        //入力された平文はこのクラスのHashPasswordで変換されてから比較される
-        //return パスワードが合えばtrue, あわなかったりnullだったらfalseを返す
-        public bool VerifyPassword() //引数は2つ　AuthTelegram→UserService.Auth()にきたパスワード　とUserRepositoryで名前検索したパスワード
+
+        /// <summary>
+        /// ハッシュ化済みの登録パスワードと平文のユーザーが入力したパスワードが一致するかどうかを確かめる
+        /// </summary>
+        /// <param name="hashedPassword">ハッシュ化済みのパスワード(DBから取得)</param>
+        /// <param name="normalPassword">ユーザーが入力した平文のパスワード</param>
+        /// <returns>一致すればtrue、一致しなければfalse</returns>
+        public bool VerifyPassword(string hashedPassword, string normalPassword)
         {
-            //if分
-            //DBからゲットしたパスワード = HashPassword
-            return true;
+            if(hashedPassword == ToHashPassword(normalPassword))
+            {
+                return true;
+            }
+            return false;
         }
 
-        //平文のパスワード(string)を受けとりハッシュ化して返す
-        //returnもstring
-        public string HashPassword(string password)
+
+        /// <summary>
+        /// 平文のパスワードをハッシュ化する
+        /// </summary>
+        /// <param name="normalPassword">平文(string)のパスワード</param>
+        /// <returns>ハッシュ化したパスワード</returns>
+        public string ToHashPassword(string normalPassword)
         {
-            var hashedPassword = new PasswordHasher().HashPassword(password);
+            var hashedPassword = new PasswordHasher().HashPassword(normalPassword);
             return hashedPassword;
         }
     }

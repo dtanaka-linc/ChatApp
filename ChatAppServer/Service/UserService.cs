@@ -44,7 +44,7 @@ namespace ChatAppServer.Service
             var password = registrationData.PassWord;
 
             //パスワードはセキュリティのためPasswordServiceクラスを使ってハッシュ化する
-            var hashedPassword = new PasswordService().HashPassword(password);
+            var hashedPassword = new PasswordService().ToHashPassword(password);
 
             //ExistUserNameで既存のユーザー名との重複を確認し新しいUserモデルクラスのデータまたはnullを返す
             if (UserRepository.ExistsUserName(userName))
@@ -55,7 +55,6 @@ namespace ChatAppServer.Service
             return null;
         }
     
-
 
         /// <summary>
         /// RegistrationTelegramで文字列に戻されたユーザー名やハッシュ化済みのパスワードをUserRepositoryクラスのAuthメソッドに渡して認証結果を得る
@@ -68,17 +67,12 @@ namespace ChatAppServer.Service
             var userName = authRequestData.GetHeader().UserName;
             var password = authRequestData.PassWord;
 
+            //ユーザー名で該当するUsersテーブルのレコードを取得(Userモデルクラス型)
+            var user =UserRepository.FindByUserName(userName);
+            /*DBから取得したハッシュ化済みのパスワードとテレグラムから取得した平文のパスワードを比較した結果をboolで取得する*/
+            var result = new PasswordService().VerifyPassword(user.Password, password);
 
-            //新しく追加したい処理
-            //userNameでUserRepository.FindByUserID()する
-            UserRepository.FindByUserName(userName);
-            //DBから取得したパスワード+ ↑のpasswordをPasswordService.verifypassword()に送信
-            //return PasswordService.verifypassword()の結果(bool)を返す
-
-
-            //＝＝＝＝元のAuth
-            //UserRepositoryのAuthメソッドの結果を返却する(該当するユーザー名とハッシュ化済みのパスワードの組み合わせのデータがあればtrue、なければfalse)
-            return UserRepository.Auth(userName, password);
+            return result;
         }
     }
 }

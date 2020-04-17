@@ -30,6 +30,7 @@ namespace ChatAppServer.Repository
             this.UserRepository = new UserRepository(this.DbContext);
         }
 
+
         /// <summary>
         /// ChatLogServiceから渡されたユーザー名と投稿内容をChatLogsに保存する
         /// </summary>
@@ -39,14 +40,12 @@ namespace ChatAppServer.Repository
         {
             //UserIdカラムにユーザーIDの情報を格納するために、ユーザー名から検索してUsersテーブルのIDを取得する
             //ユーザー名が合致したUsersのレコードを取得してuserに格納する
-            IQueryable<User> user = UserRepository.FindByUserName(userName);
-            //userのIdプロパティをuserIdに格納する
-            　//エラー出てるのでコメントアウト　var userId = user.Id;
+            var user = UserRepository.FindByUserName(userName);
 
             var chatLog = new ChatLog()
             {
                 //ChatLogクラスの各プロパティに該当する情報を格納する
-             //エラー出てるのでコメントアウト   UserId = userId,
+                UserId = user.Id,
                 Body = msg
             };
             DbContext.ChatLogs.Add(chatLog);
