@@ -70,7 +70,8 @@ namespace ChatAppServer.Service
 
 
             //新しく追加したい処理
-            //userNameでUserRepository.FindByUserName()する
+            //userNameでUserRepository.FindByUserID()する
+            UserRepository.FindByUserName(userName);
             //DBから取得したパスワード+ ↑のpasswordをPasswordService.verifypassword()に送信
             //return PasswordService.verifypassword()の結果(bool)を返す
 

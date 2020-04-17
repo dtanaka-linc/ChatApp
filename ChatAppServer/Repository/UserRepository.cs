@@ -63,7 +63,7 @@ namespace ChatAppServer.Repository
         }
 
         /// <summary>
-        /// ユーザー名で検索する
+        /// ユーザー名で検索する（複数のユーザー名がヒットしてしまうので別にFindUserByIdメソッドを定義）
         /// </summary>
         /// <param name="userName">ユーザー名</param>
         /// <returns>ユーザー名で検索した結果</returns>
@@ -71,6 +71,9 @@ namespace ChatAppServer.Repository
         {
             return this.DbContext.Users.Where(r => r.Name == userName);
         }
+
+
+
 
 
         /// <summary>
